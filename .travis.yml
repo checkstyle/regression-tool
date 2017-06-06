@@ -21,10 +21,30 @@ branches:
 matrix:
   fast_finish: true
   include:
+    # unit tests (oraclejdk8)
     - jdk: oraclejdk8
       env:
-        - DESC="mvn clean verify"
-        - CMD="mvn clean verify"
+        - DESC="tests and deploy"
+        - CMD="mvn clean integration-test failsafe:verify"
+        - DEPLOY="true"
+
+    # checkstyle (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="checkstyle and sevntu-checkstyle"
+        - CMD="mvn clean verify -DskipTests -Dpmd.skip=true -Dfindbugs.skip=true -Dcobertura.skip=true"
+
+    # cobertura and codecov (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="cobertura and codecov"
+        - CMD="mvn clean compile cobertura:check cobertura:cobertura"
+
+    # findbugs and pmd (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="findbugs and pmd"
+        - CMD="mvn clean compile pmd:check findbugs:check"
 
 script: eval $CMD
 
