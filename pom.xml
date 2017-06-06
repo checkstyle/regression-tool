@@ -135,7 +135,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>check</id>
+                        <id>check_sevntu</id>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -146,7 +146,7 @@
                             <configLocation>
                                 https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-${checkstyle.version}/config/checkstyle_sevntu_checks.xml
                             </configLocation>
-                            <propertiesLocation>config/checkstyle.properties</propertiesLocation>
+                            <propertyExpansion>project.basedir=${project.basedir}</propertyExpansion>
                             <failOnViolation>true</failOnViolation>
                             <logViolationsToConsole>true</logViolationsToConsole>
                             <maxAllowedViolations>0</maxAllowedViolations>
