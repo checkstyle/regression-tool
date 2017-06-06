@@ -34,5 +34,6 @@ public final class Main {
      * @throws Exception execute failure
      */
     public static void main(String[] args) throws Exception {
+        // empty for now
     }
 }
