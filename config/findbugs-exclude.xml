@@ -2,8 +2,17 @@
 <FindBugsFilter>
     <Match>
         <!-- that CLI class so we need system exit code there, but only in main(...) method -->
-        <Class name="com.puppycrawl.tools.checkstyle.Main" />
-        <Method name="main" />
-        <Bug pattern="DM_EXIT" />
+        <Class name="com.puppycrawl.tools.checkstyle.Main"/>
+        <Method name="main"/>
+        <Bug pattern="DM_EXIT"/>
+    </Match>
+    <Match>
+        <!-- This is a false positive. It is no problem to do that cast. In fact the cast is
+            in JGit library. There is no reason to raise this warning. -->
+        <Class name="com.github.checkstyle.regression.git.DiffParser"/>
+        <Or>
+            <Bug pattern="BC_UNCONFIRMED_CAST"/>
+            <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
+        </Or>
     </Match>
 </FindBugsFilter>
