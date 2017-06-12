@@ -23,13 +23,16 @@ import static com.github.checkstyle.regression.internal.TestUtils.assertUtilsCla
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.github.checkstyle.regression.data.GitChange;
@@ -37,20 +40,8 @@ import com.github.checkstyle.regression.data.ImmutableGitChange;
 import com.github.checkstyle.regression.internal.GitUtils;
 
 public class DiffParserTest {
-    private Repository repository;
-
-    @Before
-    public void setUp() throws Exception {
-        repository = GitUtils.createNewRepository();
-        final File helloWorld = GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
-        GitUtils.createNewBranchAndCheckout(repository, "foo");
-        Files.write(helloWorld.toPath(), "hello world!".getBytes(), StandardOpenOption.APPEND);
-        GitUtils.addAllAndCommit(repository, "append text to HelloWorld");
-    }
-
     @After
     public void tearDown() throws Exception {
-        repository.close();
         GitUtils.clearTempRepositories();
     }
 
@@ -60,11 +51,37 @@ public class DiffParserTest {
     }
 
     @Test
-    public void testParse() throws Exception {
-        final List<GitChange> changes = DiffParser.parse(
-                repository.getDirectory().getParent(), "foo");
-        assertEquals(1, changes.size());
-        assertEquals("HelloWorld", changes.iterator().next().path());
+    public void testParseAddChange() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            GitUtils.addAnEmptyFileAndCommit(repository, "AddedFile");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("AddedFile")
+                    .build();
+            assertEquals("The change is not as expected", expected, changes.get(0));
+        }
+    }
+
+    @Test
+    public void testParseModifyChange() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            final File helloWorld = GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            Files.write(helloWorld.toPath(), "hello world!".getBytes(Charset.forName("UTF-8")),
+                    StandardOpenOption.APPEND);
+            GitUtils.addAllAndCommit(repository, "append text to HelloWorld");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("HelloWorld")
+                    .build();
+            assertEquals("The change is not as expected", expected, changes.get(0));
+        }
     }
 
     @Test
@@ -77,6 +94,50 @@ public class DiffParserTest {
             final List<GitChange> changes = DiffParser.parse(
                     repository.getDirectory().getParent(), "foo");
             assertEquals("There should be no changes detected", 0, changes.size());
+        }
+    }
+
+    @Test
+    public void testParseRenameChange() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorldFoo");
+            GitUtils.removeFileAndCommit(repository, "HelloWorld");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("HelloWorldFoo")
+                    .build();
+            assertEquals("The change is not as expected", expected, changes.get(0));
+        }
+    }
+
+    @Test
+    public void testParseCopyChange() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            GitUtils.addAnEmptyFileAndCommit(repository, "a.txt");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            GitUtils.addAnEmptyFileAndCommit(repository, "b.txt");
+            GitUtils.addAnEmptyFileAndCommit(repository, "src/com/foo/c.java");
+            GitUtils.addAnEmptyFileAndCommit(repository, "src/com/foo/d.java");
+            GitUtils.removeFileAndCommit(repository, "a.txt");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 3 change detected", 3, changes.size());
+            final GitChange expected0 = ImmutableGitChange.builder()
+                    .path("b.txt")
+                    .build();
+            assertEquals("The change is not as expected", expected0, changes.get(0));
+            final GitChange expected1 = ImmutableGitChange.builder()
+                    .path("src/com/foo/c.java")
+                    .build();
+            assertEquals("The change is not as expected", expected1, changes.get(1));
+            final GitChange expected2 = ImmutableGitChange.builder()
+                    .path("src/com/foo/d.java")
+                    .build();
+            assertEquals("The change is not as expected", expected2, changes.get(2));
         }
     }
 
@@ -96,6 +157,50 @@ public class DiffParserTest {
                     .build();
             assertEquals("The only change path should be 'ChangeInFoo'",
                     expected, changes.get(0));
+        }
+    }
+
+    @Test
+    public void testParsePrBranchWithMultipleCommits() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            GitUtils.addAnEmptyFileAndCommit(repository, "AddInCommit1");
+            GitUtils.addAnEmptyFileAndCommit(repository, "AddInCommit2");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 2 change detected", 2, changes.size());
+            final GitChange expected0 = ImmutableGitChange.builder()
+                    .path("AddInCommit1")
+                    .build();
+            assertEquals("The change is not as expected", expected0, changes.get(0));
+            final GitChange expected1 = ImmutableGitChange.builder()
+                    .path("AddInCommit2")
+                    .build();
+            assertEquals("The change is not as expected", expected1, changes.get(1));
+        }
+    }
+
+    @Test
+    public void testParseFilePermissionChange() throws Exception {
+        // Skip this UT on Windows
+        if (!SystemUtils.IS_OS_WINDOWS) {
+            try (Repository repository = GitUtils.createNewRepository()) {
+                final File file = GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+                GitUtils.createNewBranchAndCheckout(repository, "foo");
+                final Set<PosixFilePermission> permissions =
+                        Files.getPosixFilePermissions(file.toPath());
+                permissions.add(PosixFilePermission.OWNER_EXECUTE);
+                Files.setPosixFilePermissions(file.toPath(), permissions);
+                GitUtils.addAllAndCommit(repository, "Change file mode");
+                final List<GitChange> changes = DiffParser.parse(
+                        repository.getDirectory().getParent(), "foo");
+                assertEquals("There should be 1 change detected", 1, changes.size());
+                final GitChange expected = ImmutableGitChange.builder()
+                        .path("HelloWorld")
+                        .build();
+                assertEquals("The change is not as expected", expected, changes.get(0));
+            }
         }
     }
 }

@@ -26,10 +26,14 @@ import java.util.LinkedList;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.RmCommand;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+
+import com.google.common.collect.Iterables;
 
 /**
  * Contains utility methods for git component test.
@@ -76,6 +80,11 @@ public final class GitUtils {
             throws IOException, GitAPIException {
         try (Git git = new Git(repository)) {
             final File file = new File(repository.getDirectory().getParent(), fileName);
+            if (!file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()) {
+                    throw new IOException("Could not create directory " + file.getParentFile());
+                }
+            }
             if (!file.createNewFile()) {
                 throw new IOException("Could not create file " + file);
             }
@@ -88,6 +97,16 @@ public final class GitUtils {
     public static void addAllAndCommit(Repository repository, String message)
             throws GitAPIException {
         try (Git git = new Git(repository)) {
+            // In JGit, the "add ." could not add the deleted files into staging area.
+            // To obtain the same behavior as git CLI command "git add .", we have to
+            // use RmCommand to handle deleted files.
+            final Status status = git.status().call();
+            if (!status.getMissing().isEmpty() || !status.getRemoved().isEmpty()) {
+                final RmCommand rm = git.rm().setCached(true);
+                Iterables.concat(status.getMissing(), status.getRemoved())
+                        .forEach(rm::addFilepattern);
+                rm.call();
+            }
             git.add().addFilepattern(".").call();
             git.commit().setMessage(message).call();
         }
