@@ -6,6 +6,7 @@
 <import-control pkg="com.github.checkstyle.regression">
     <allow pkg="java.io"/>
     <allow pkg="java.util"/>
+    <allow pkg="com.github.checkstyle.regression.data"/>
     <subpackage name="git">
         <allow pkg="org.eclipse.jgit"/>
     </subpackage>

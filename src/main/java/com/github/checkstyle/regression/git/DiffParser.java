@@ -38,6 +38,8 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
+import com.github.checkstyle.regression.data.GitChange;
+
 /**
  * Parses git diff between feature branch and master for the further use.
  * @author LuoLiangchen
