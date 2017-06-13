@@ -17,29 +17,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.github.checkstyle.regression.git;
-
 /**
- * Represents git changes of a file.
- * @author LuoLiangchen
+ * Contains data classes which would be passed between components.
+ * The classes should be simple POJOs, with {@code final} fields.
  */
-public class GitChange {
-    /** The path of the changed file. */
-    private final String path;
-
-    /**
-     * Creates a new {@link GitChange} instance.
-     * @param path the path of the changed file
-     */
-    GitChange(String path) {
-        this.path = path;
-    }
-
-    /**
-     * Gets the path of the changed file.
-     * @return the path of the changed file
-     */
-    public String getPath() {
-        return path;
-    }
-}
+package com.github.checkstyle.regression.data;

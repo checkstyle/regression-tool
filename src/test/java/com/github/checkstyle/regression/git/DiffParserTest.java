@@ -32,6 +32,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.checkstyle.regression.data.GitChange;
 import com.github.checkstyle.regression.internal.GitUtils;
 
 public class DiffParserTest {
