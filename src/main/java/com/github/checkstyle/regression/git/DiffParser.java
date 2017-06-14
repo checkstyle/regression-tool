@@ -59,23 +59,35 @@ public final class DiffParser {
      */
     public static List<GitChange> parse(String repositoryPath, String branchName)
             throws IOException, GitAPIException {
+        final List<GitChange> returnValue;
         final File gitDir = new File(repositoryPath, ".git");
         final Repository repository = new FileRepositoryBuilder().setGitDir(gitDir)
                 .readEnvironment().findGitDir().build();
-        final Git git = new Git(repository);
-        final AbstractTreeIterator featureTreeParser =
-                prepareTreeParser(repository, Constants.R_HEADS + branchName);
-        final AbstractTreeIterator masterTreeParser =
-                prepareTreeParser(repository, Constants.R_HEADS + "master");
-        final List<GitChange> returnValue = git.diff()
-                .setOldTree(masterTreeParser)
-                .setNewTree(featureTreeParser)
-                .call()
-                .stream()
-                .map(DiffParser::convertDiffEntryToGitChange)
-                .collect(Collectors.toList());
-        git.close();
-        repository.close();
+
+        try {
+            final Git git = new Git(repository);
+
+            try {
+                final AbstractTreeIterator featureTreeParser =
+                        prepareTreeParser(repository, Constants.R_HEADS + branchName);
+                final AbstractTreeIterator masterTreeParser =
+                        prepareTreeParser(repository, Constants.R_HEADS + "master");
+                returnValue = git.diff()
+                        .setOldTree(masterTreeParser)
+                        .setNewTree(featureTreeParser)
+                        .call()
+                        .stream()
+                        .map(DiffParser::convertDiffEntryToGitChange)
+                        .collect(Collectors.toList());
+            }
+            finally {
+                git.close();
+            }
+        }
+        finally {
+            repository.close();
+        }
+
         return returnValue;
     }
 
@@ -88,17 +100,30 @@ public final class DiffParser {
      */
     private static AbstractTreeIterator prepareTreeParser(Repository repository, String ref)
             throws IOException {
-        final Ref head = repository.exactRef(ref);
+        final CanonicalTreeParser returnValue;
         final RevWalk walk = new RevWalk(repository);
-        final RevCommit commit = walk.parseCommit(head.getObjectId());
-        final RevTree tree = walk.parseTree(commit.getTree().getId());
-        final CanonicalTreeParser treeParser = new CanonicalTreeParser();
-        final ObjectReader reader = repository.newObjectReader();
-        treeParser.reset(reader, tree.getId());
-        reader.close();
-        walk.dispose();
-        walk.close();
-        return treeParser;
+
+        try {
+            final Ref head = repository.exactRef(ref);
+            final RevCommit commit = walk.parseCommit(head.getObjectId());
+            final RevTree tree = walk.parseTree(commit.getTree().getId());
+            final ObjectReader reader = repository.newObjectReader();
+
+            try {
+                returnValue = new CanonicalTreeParser();
+                returnValue.reset(reader, tree.getId());
+            }
+            finally {
+                reader.close();
+            }
+
+            walk.dispose();
+        }
+        finally {
+            walk.close();
+        }
+
+        return returnValue;
     }
 
     /**
