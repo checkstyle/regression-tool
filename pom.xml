@@ -286,11 +286,6 @@
                                         <lineRate>0</lineRate>
                                     </regex>
                                     <regex>
-                                        <pattern>com.github.checkstyle.regression.data.ModuleExtractInfo</pattern>
-                                        <branchRate>0</branchRate>
-                                        <lineRate>0</lineRate>
-                                    </regex>
-                                    <regex>
                                         <pattern>com.github.checkstyle.regression.data.ModuleInfo</pattern>
                                         <branchRate>0</branchRate>
                                         <lineRate>0</lineRate>

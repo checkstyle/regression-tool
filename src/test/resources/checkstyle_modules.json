@@ -1,0 +1,31 @@
+[
+  {
+    "name": "NewlineAtEndOfFileCheck",
+    "packageName": "com.puppycrawl.tools.checkstyle.checks",
+    "parent": "Checker",
+    "hierarchies": [
+      "com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck",
+      "com.puppycrawl.tools.checkstyle.api.AbstractViolationReporter",
+      "com.puppycrawl.tools.checkstyle.api.AutomaticBean"
+    ],
+    "interfaces": [
+      "com.puppycrawl.tools.checkstyle.api.FileSetCheck",
+      "com.puppycrawl.tools.checkstyle.api.Configurable",
+      "com.puppycrawl.tools.checkstyle.api.Contextualizable"
+    ]
+  },
+  {
+    "name": "EmptyStatementCheck",
+    "packageName": "com.puppycrawl.tools.checkstyle.checks.coding",
+    "parent": "TreeWalker",
+    "hierarchies": [
+      "com.puppycrawl.tools.checkstyle.api.AbstractCheck",
+      "com.puppycrawl.tools.checkstyle.api.AbstractViolationReporter",
+      "com.puppycrawl.tools.checkstyle.api.AutomaticBean"
+    ],
+    "interfaces": [
+      "com.puppycrawl.tools.checkstyle.api.Configurable",
+      "com.puppycrawl.tools.checkstyle.api.Contextualizable"
+    ]
+  }
+]
