@@ -140,6 +140,9 @@
   <rule ref="rulesets/java/naming.xml">
     <!-- we use CheckstyleCustomShortVariable, to control lenght (will be fixed in PMD 5.4) and skip Override methods -->
     <exclude name="ShortVariable"/>
+    <!-- we already have AbstractClassName for checking Abstract class name. It is annoying to set suppression in both
+      checkstyle and PMD. -->
+    <exclude name="AbstractNaming"/>
   </rule>
   <rule name="CheckstyleCustomShortVariable"
       message="Avoid variables with short names that shorter than 2 symbols: {0}"
@@ -164,7 +167,6 @@
       </property>
     </properties>
   </rule>
-  <rule ref="rulesets/java/naming.xml/AbstractNaming" />
   <rule ref="rulesets/java/naming.xml/LongVariable">
     <properties>
       <!-- nothing bad in long and descriptive variable names if only they fit line, but still keep it reasonable -->

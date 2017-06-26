@@ -7,6 +7,13 @@
     <allow pkg="java.io"/>
     <allow pkg="java.util"/>
     <allow pkg="com.github.checkstyle.regression.data"/>
+    <allow pkg="org.immutables.value"/>
+
+    <subpackage name="data">
+        <!-- it is only allowed until https://github.com/checkstyle/checkstyle/issues/3492 -->
+        <allow pkg="org.immutables.gson"/>
+    </subpackage>
+
     <subpackage name="git">
         <allow pkg="org.eclipse.jgit"/>
     </subpackage>
