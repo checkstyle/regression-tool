@@ -285,10 +285,23 @@
                                         <branchRate>0</branchRate>
                                         <lineRate>0</lineRate>
                                     </regex>
+                                    <regex>
+                                        <pattern>com.github.checkstyle.regression.data.ModuleExtractInfo</pattern>
+                                        <branchRate>0</branchRate>
+                                        <lineRate>0</lineRate>
+                                    </regex>
+                                    <regex>
+                                        <pattern>com.github.checkstyle.regression.data.ModuleInfo</pattern>
+                                        <branchRate>0</branchRate>
+                                        <lineRate>0</lineRate>
+                                    </regex>
                                 </regexes>
                             </check>
                             <instrumentation>
                                 <excludes>
+                                    <exclude>**/GsonAdapters*.class</exclude>
+                                    <exclude>**/Immutable*.class</exclude>
+                                    <exclude>**/Modifiable*.class</exclude>
                                 </excludes>
                             </instrumentation>
                         </configuration>

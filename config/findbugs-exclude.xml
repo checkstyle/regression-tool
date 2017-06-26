@@ -15,4 +15,9 @@
             <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
         </Or>
     </Match>
+    <Match>
+        <!-- This is a bug of immutables. hashCode() of a Modifiable class is dangerous. -->
+        <Class name="~.*\.Modifiable.*"/>
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+    </Match>
 </FindBugsFilter>
