@@ -286,6 +286,11 @@
                                         <lineRate>0</lineRate>
                                     </regex>
                                     <regex>
+                                        <pattern>com.github.checkstyle.regression.configuration.ConfigGenerator</pattern>
+                                        <branchRate>80</branchRate>
+                                        <lineRate>91</lineRate>
+                                    </regex>
+                                    <regex>
                                         <pattern>com.github.checkstyle.regression.module.ModuleUtils</pattern>
                                         <branchRate>28</branchRate>
                                         <lineRate>52</lineRate>
