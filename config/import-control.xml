@@ -9,6 +9,13 @@
     <allow pkg="com.github.checkstyle.regression.data"/>
     <allow pkg="org.immutables.value"/>
 
+    <subpackage name="configuration">
+        <allow pkg="javax.xml"/>
+        <allow pkg="org.w3c.dom"/>
+        <allow pkg="org.xml"/>
+        <allow pkg="java.nio"/>
+    </subpackage>
+
     <subpackage name="data">
         <!-- it is only allowed until https://github.com/checkstyle/checkstyle/issues/3492 -->
         <allow pkg="org.immutables.gson"/>
