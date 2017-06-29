@@ -21,7 +21,10 @@ package com.github.checkstyle.regression.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Constants;
@@ -33,6 +36,8 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
  * @author LuoLiangchen
  */
 public final class GitUtils {
+    private static final Collection<Repository> TEMP_REPOSITORIES = new LinkedList<>();
+
     /** Prevents instantiation. */
     private GitUtils() {
     }
@@ -44,6 +49,7 @@ public final class GitUtils {
         }
         final Repository repository = FileRepositoryBuilder.create(new File(repoDir, ".git"));
         repository.create();
+        TEMP_REPOSITORIES.add(repository);
         return repository;
     }
 
@@ -77,6 +83,20 @@ public final class GitUtils {
         try (Git git = new Git(repository)) {
             git.add().addFilepattern(".").call();
             git.commit().setMessage(message).call();
+        }
+    }
+
+    public static void removeFileAndCommit(Repository repository, String fileName)
+            throws GitAPIException {
+        try (Git git = new Git(repository)) {
+            git.rm().addFilepattern(fileName).call();
+            git.commit().setMessage("rm " + fileName).call();
+        }
+    }
+
+    public static void clearTempRepositories() throws IOException {
+        for (Repository repository : TEMP_REPOSITORIES) {
+            FileUtils.deleteDirectory(repository.getDirectory().getParentFile());
         }
     }
 }

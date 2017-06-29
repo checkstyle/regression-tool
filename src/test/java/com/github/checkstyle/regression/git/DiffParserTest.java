@@ -50,6 +50,7 @@ public class DiffParserTest {
     @After
     public void tearDown() throws Exception {
         repository.close();
+        GitUtils.clearTempRepositories();
     }
 
     @Test
@@ -63,5 +64,18 @@ public class DiffParserTest {
                 repository.getDirectory().getParent(), "foo");
         assertEquals(1, changes.size());
         assertEquals("HelloWorld", changes.iterator().next().getPath());
+    }
+
+    @Test
+    public void testParseDeleteChange() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            GitUtils.addAnEmptyFileAndCommit(repository, "FileToDelete");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            GitUtils.removeFileAndCommit(repository, "FileToDelete");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be no changes detected", 0, changes.size());
+        }
     }
 }

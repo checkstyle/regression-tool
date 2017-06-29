@@ -77,6 +77,7 @@ public final class DiffParser {
                         .setNewTree(featureTreeParser)
                         .call()
                         .stream()
+                        .filter(entry -> entry.getChangeType() != DiffEntry.ChangeType.DELETE)
                         .map(DiffParser::convertDiffEntryToGitChange)
                         .collect(Collectors.toList());
             }
