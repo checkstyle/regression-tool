@@ -139,7 +139,7 @@ public final class ModuleUtils {
      */
     private static boolean isJavaMainSource(GitChange change) {
         final boolean returnValue;
-        final Matcher matcher = JAVA_SOURCE_PARTTEN.matcher(change.getPath());
+        final Matcher matcher = JAVA_SOURCE_PARTTEN.matcher(change.path());
         if (matcher.find()) {
             returnValue = "main".equals(matcher.group(1));
         }
@@ -160,7 +160,7 @@ public final class ModuleUtils {
      */
     private static boolean isJavaTestSource(GitChange change) {
         final boolean returnValue;
-        final Matcher matcher = JAVA_SOURCE_PARTTEN.matcher(change.getPath());
+        final Matcher matcher = JAVA_SOURCE_PARTTEN.matcher(change.path());
         if (matcher.find()) {
             returnValue = "test".equals(matcher.group(1));
         }
@@ -185,7 +185,7 @@ public final class ModuleUtils {
      * @return the corresponding full qualified name
      */
     public static String convertJavaSourceChangeToFullName(GitChange change) {
-        return Arrays.stream(JAVA_SOURCE_PARTTEN.matcher(change.getPath())
+        return Arrays.stream(JAVA_SOURCE_PARTTEN.matcher(change.path())
                 .replaceAll("$2").split("/")).collect(Collectors.joining("."));
     }
 }

@@ -65,6 +65,13 @@ public final class GitUtils {
         }
     }
 
+    public static void checkoutBranch(Repository repository, String branchName)
+            throws GitAPIException {
+        try (Git git = new Git(repository)) {
+            git.checkout().setName(branchName).call();
+        }
+    }
+
     public static File addAnEmptyFileAndCommit(Repository repository, String fileName)
             throws IOException, GitAPIException {
         try (Git git = new Git(repository)) {

@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.checkstyle.regression.data.GitChange;
+import com.github.checkstyle.regression.data.ImmutableGitChange;
 import com.github.checkstyle.regression.data.ImmutableModuleExtractInfo;
 import com.github.checkstyle.regression.data.ModuleExtractInfo;
 import com.github.checkstyle.regression.extract.ExtractInfoProcessor;
@@ -60,31 +61,37 @@ public class ModuleUtilsTest {
 
     @Test
     public void testIsCheckstyleModule() {
-        final GitChange change = new GitChange(
-                JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java");
+        final GitChange change = ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java")
+                .build();
         final boolean result = ModuleUtils.isCheckstyleModule(change);
         assertTrue("EmptyStatementCheck should be considered as a checkstyle module", result);
     }
 
     @Test
     public void testIsCheckstyleModuleNonModule() {
-        final GitChange change = new GitChange(
-                JAVA_MAIN_SOURCE_PREFIX + "PackageObjectFactory.java");
+        final GitChange change = ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "PackageObjectFactory.java")
+                .build();
         final boolean result = ModuleUtils.isCheckstyleModule(change);
         assertFalse("PackageObjectFactory should not be considered as a checkstyle module", result);
     }
 
     @Test
     public void testIsCheckstyleModuleNonMainFile() {
+        final GitChange change = ImmutableGitChange.builder()
+                .path("src/test/java/foo/Foo.java")
+                .build();
         final boolean result =
-                ModuleUtils.isCheckstyleModule(new GitChange("src/test/java/foo/Foo.java"));
+                ModuleUtils.isCheckstyleModule(change);
         assertFalse("Non main file should not be consideres as a checkstyle module", result);
     }
 
     @Test
     public void testConvertModuleChangeToExtractInfo() {
-        final GitChange change = new GitChange(
-                JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java");
+        final GitChange change = ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java")
+                .build();
         final ModuleExtractInfo moduleExtractInfo = ModuleUtils
                 .getModuleExtractInfo(BASE_PACKAGE + ".checks.coding.EmptyStatementCheck");
         final ModuleExtractInfo expected = ImmutableModuleExtractInfo.builder()
