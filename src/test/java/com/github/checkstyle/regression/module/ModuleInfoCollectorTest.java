@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.checkstyle.regression.data.GitChange;
+import com.github.checkstyle.regression.data.ImmutableGitChange;
 import com.github.checkstyle.regression.data.ImmutableModuleExtractInfo;
 import com.github.checkstyle.regression.data.ImmutableModuleInfo;
 import com.github.checkstyle.regression.data.ModuleExtractInfo;
@@ -67,12 +68,15 @@ public class ModuleInfoCollectorTest {
 
     @Test
     public void testGenerateConfigNodesForValidChanges1() {
-        final GitChange moduleChange = new GitChange(
-                JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java");
-        final GitChange testChange = new GitChange(
-                JAVA_TEST_SOURCE_PREFIX + "checks/coding/EmptyStatementCheckTest.java");
-        final GitChange nonRelatedChange = new GitChange(
-                JAVA_TEST_SOURCE_PREFIX + "checks/NewlineAtEndOfFileCheckTest.java");
+        final GitChange moduleChange = ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java")
+                .build();
+        final GitChange testChange = ImmutableGitChange.builder()
+                .path(JAVA_TEST_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java")
+                .build();
+        final GitChange nonRelatedChange = ImmutableGitChange.builder()
+                .path(JAVA_TEST_SOURCE_PREFIX + "checks/NewlineAtEndOfFileCheckTest.java")
+                .build();
         final List<GitChange> changes = Arrays.asList(moduleChange, testChange, nonRelatedChange);
         final ModuleExtractInfo moduleExtractInfo = ImmutableModuleExtractInfo.builder()
                 .name("EmptyStatementCheck")
@@ -93,12 +97,15 @@ public class ModuleInfoCollectorTest {
 
     @Test
     public void testGenerateConfigNodesForValidChanges2() {
-        final GitChange moduleChange = new GitChange(
-                JAVA_MAIN_SOURCE_PREFIX + "checks/NewlineAtEndOfFileCheck.java");
-        final GitChange testChange = new GitChange(
-                JAVA_TEST_SOURCE_PREFIX + "checks/NewlineAtEndOfFileCheckTest.java");
-        final GitChange nonRelatedChange = new GitChange(
-                JAVA_TEST_SOURCE_PREFIX + "checks/coding/EmptyStatementCheckTest.java");
+        final GitChange moduleChange = ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "checks/NewlineAtEndOfFileCheck.java")
+                .build();
+        final GitChange testChange = ImmutableGitChange.builder()
+                .path(JAVA_TEST_SOURCE_PREFIX + "checks/NewlineAtEndOfFileCheckTest.java")
+                .build();
+        final GitChange nonRelatedChange = ImmutableGitChange.builder()
+                .path(JAVA_TEST_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java")
+                .build();
         final List<GitChange> changes = Arrays.asList(moduleChange, testChange, nonRelatedChange);
         final ModuleExtractInfo moduleExtractInfo = ImmutableModuleExtractInfo.builder()
                 .name("NewlineAtEndOfFileCheck")
@@ -118,10 +125,12 @@ public class ModuleInfoCollectorTest {
     @Test
     public void testGenerateConfigNodesForInvalidChanges() {
         final List<GitChange> changes = new LinkedList<>();
-        changes.add(new GitChange(
-                JAVA_MAIN_SOURCE_PREFIX + "PackageObjectFactory.java"));
-        changes.add(new GitChange("src/main/java/Bar.java"));
-        changes.add(new GitChange("foo/A.java"));
+        changes.add(ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "PackageObjectFactory.java").build());
+        changes.add(ImmutableGitChange.builder()
+                .path("src/main/java/Bar.java").build());
+        changes.add(ImmutableGitChange.builder()
+                .path("foo/A.java").build());
         final List<ModuleInfo> moduleInfos =
                 ModuleCollector.generate(changes);
         assertEquals("The size of the module info list should be 0", 0, moduleInfos.size());

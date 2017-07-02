@@ -28,20 +28,20 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
 import com.github.checkstyle.regression.data.GitChange;
+import com.github.checkstyle.regression.data.ImmutableGitChange;
 
 /**
- * Parses git diff between feature branch and master for the further use.
+ * Parses git diff between PR branch and master for the further use.
  * @author LuoLiangchen
  */
 public final class DiffParser {
@@ -65,16 +65,13 @@ public final class DiffParser {
                 .readEnvironment().findGitDir().build();
 
         try {
+            final TreeParserPair pair = getTreeParserPair(repository, branchName);
             final Git git = new Git(repository);
 
             try {
-                final AbstractTreeIterator featureTreeParser =
-                        prepareTreeParser(repository, Constants.R_HEADS + branchName);
-                final AbstractTreeIterator masterTreeParser =
-                        prepareTreeParser(repository, Constants.R_HEADS + "master");
                 returnValue = git.diff()
-                        .setOldTree(masterTreeParser)
-                        .setNewTree(featureTreeParser)
+                        .setOldTree(pair.commonAncestorTreeParser)
+                        .setNewTree(pair.prTreeParser)
                         .call()
                         .stream()
                         .filter(entry -> entry.getChangeType() != DiffEntry.ChangeType.DELETE)
@@ -93,32 +90,27 @@ public final class DiffParser {
     }
 
     /**
-     * Creates a tree parser from a commit, to be used by diff command.
-     * @param repository the repository to parse diff
-     * @param ref        the name of the ref to the commit; e.g., "refs/heads/master"
-     * @return the tree parser
+     * Gets a TreeParserPair for the further use.
+     * @param repository the repository to parse
+     * @param branch     the name of the PR branch
+     * @return the TreeParserPair prepared for the further use
      * @throws IOException JGit library exception
      */
-    private static AbstractTreeIterator prepareTreeParser(Repository repository, String ref)
+    private static TreeParserPair getTreeParserPair(Repository repository, String branch)
             throws IOException {
-        final CanonicalTreeParser returnValue;
+        final TreeParserPair returnValue;
         final RevWalk walk = new RevWalk(repository);
 
         try {
-            final Ref head = repository.exactRef(ref);
-            final RevCommit commit = walk.parseCommit(head.getObjectId());
-            final RevTree tree = walk.parseTree(commit.getTree().getId());
-            final ObjectReader reader = repository.newObjectReader();
-
-            try {
-                returnValue = new CanonicalTreeParser();
-                returnValue.reset(reader, tree.getId());
-            }
-            finally {
-                reader.close();
-            }
-
+            final RevCommit prCommit = walk.parseCommit(
+                    repository.exactRef(Constants.R_HEADS + branch).getObjectId());
+            final RevCommit masterCommit = walk.parseCommit(
+                    repository.exactRef(Constants.R_HEADS + "master").getObjectId());
+            final RevCommit commonAncestorCommit = getMergeBaseCommit(walk, prCommit, masterCommit);
             walk.dispose();
+
+            returnValue = new TreeParserPair(prepareTreeParser(walk, prCommit),
+                    prepareTreeParser(walk, commonAncestorCommit));
         }
         finally {
             walk.close();
@@ -128,11 +120,70 @@ public final class DiffParser {
     }
 
     /**
+     * Gets the merge-base of two commits.
+     * A merge-base is a best common ancestor between two commits. One common ancestor is
+     * better than another common ancestor if the latter is an ancestor of the former.
+     * A common ancestor that does not have any better common ancestor is a best common ancestor.
+     * @param walk    the {@link RevWalk} for computing merge bases
+     * @param commitA the first commit to start the walk with
+     * @param commitB the second commit to start the walk with
+     * @return the merge-base of two commits
+     * @throws IOException JGit library exception
+     */
+    private static RevCommit getMergeBaseCommit(
+            RevWalk walk, RevCommit commitA, RevCommit commitB) throws IOException {
+        walk.reset();
+        walk.setRevFilter(RevFilter.MERGE_BASE);
+        walk.markStart(commitA);
+        walk.markStart(commitB);
+        return walk.next();
+    }
+
+    /**
+     * Creates a tree parser from a commit, to be used by diff command.
+     * @param walk   the {@link RevWalk} to parse the tree
+     * @param commit the commit to create tree parser from
+     * @return the tree parser
+     * @throws IOException JGit library exception
+     */
+    private static AbstractTreeIterator prepareTreeParser(RevWalk walk, RevCommit commit)
+            throws IOException {
+        final RevTree tree = walk.parseTree(commit.getTree().getId());
+        final CanonicalTreeParser returnValue;
+        returnValue = new CanonicalTreeParser();
+        returnValue.reset(walk.getObjectReader(), tree.getId());
+        return returnValue;
+    }
+
+    /**
      * Converts a {@link DiffEntry} to {@link GitChange} for the further use.
      * @param diffEntry the {@link DiffEntry} instance to be converted
      * @return the {@link GitChange} instance converted from the given {@link DiffEntry}
      */
     private static GitChange convertDiffEntryToGitChange(DiffEntry diffEntry) {
-        return new GitChange(diffEntry.getNewPath());
+        return ImmutableGitChange.builder()
+                .path(diffEntry.getNewPath())
+                .build();
+    }
+
+    /** A pair of tree parsers: PR branch tree parser and common ancestor tree parser. */
+    private static class TreeParserPair {
+        /** The tree parser of the head commit of PR branch. */
+        private final AbstractTreeIterator prTreeParser;
+
+        /** The tree parser of the merge-base commit between PR branch and master. */
+        private final AbstractTreeIterator commonAncestorTreeParser;
+
+        /**
+         * Creates a new TreeParserPair instance.
+         * @param prTreeParser             the tree parser of the head commit of PR branch
+         * @param commonAncestorTreeParser the tree parser of the merge-base commit between
+         *                                 PR branch and master
+         */
+        TreeParserPair(
+                AbstractTreeIterator prTreeParser, AbstractTreeIterator commonAncestorTreeParser) {
+            this.prTreeParser = prTreeParser;
+            this.commonAncestorTreeParser = commonAncestorTreeParser;
+        }
     }
 }

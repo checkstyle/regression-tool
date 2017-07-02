@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.checkstyle.regression.data.GitChange;
+import com.github.checkstyle.regression.data.ImmutableGitChange;
 import com.github.checkstyle.regression.internal.GitUtils;
 
 public class DiffParserTest {
@@ -63,7 +64,7 @@ public class DiffParserTest {
         final List<GitChange> changes = DiffParser.parse(
                 repository.getDirectory().getParent(), "foo");
         assertEquals(1, changes.size());
-        assertEquals("HelloWorld", changes.iterator().next().getPath());
+        assertEquals("HelloWorld", changes.iterator().next().path());
     }
 
     @Test
@@ -76,6 +77,25 @@ public class DiffParserTest {
             final List<GitChange> changes = DiffParser.parse(
                     repository.getDirectory().getParent(), "foo");
             assertEquals("There should be no changes detected", 0, changes.size());
+        }
+    }
+
+    @Test
+    public void testParsePrBranchBehindMaster() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            GitUtils.addAnEmptyFileAndCommit(repository, "ChangeInFoo");
+            GitUtils.checkoutBranch(repository, "master");
+            GitUtils.addAnEmptyFileAndCommit(repository, "ChangeInMaster");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("ChangeInFoo")
+                    .build();
+            assertEquals("The only change path should be 'ChangeInFoo'",
+                    expected, changes.get(0));
         }
     }
 }

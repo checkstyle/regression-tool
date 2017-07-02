@@ -19,27 +19,17 @@
 
 package com.github.checkstyle.regression.data;
 
+import org.immutables.value.Value;
+
 /**
  * Represents git changes of a file.
  * @author LuoLiangchen
  */
-public class GitChange {
-    /** The path of the changed file. */
-    private final String path;
-
+@Value.Immutable
+public interface GitChange {
     /**
-     * Creates a new {@link GitChange} instance.
-     * @param path the path of the changed file
-     */
-    public GitChange(String path) {
-        this.path = path;
-    }
-
-    /**
-     * Gets the path of the changed file.
+     * The path of the changed file.
      * @return the path of the changed file
      */
-    public String getPath() {
-        return path;
-    }
+    String path();
 }
