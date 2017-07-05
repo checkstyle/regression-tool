@@ -315,6 +315,11 @@
                                         <branchRate>28</branchRate>
                                         <lineRate>52</lineRate>
                                     </regex>
+                                    <regex>
+                                        <pattern>com.github.checkstyle.regression.report.ReportGenerator</pattern>
+                                        <branchRate>0</branchRate>
+                                        <lineRate>0</lineRate>
+                                    </regex>
                                 </regexes>
                             </check>
                             <instrumentation>
