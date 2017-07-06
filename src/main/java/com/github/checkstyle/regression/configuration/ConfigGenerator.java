@@ -126,8 +126,9 @@ public final class ConfigGenerator {
     public static File generateConfig(String path, List<ModuleInfo> moduleInfos)
             throws IOException, TransformerException {
         final File file = new File(path);
-        Files.write(file.toPath(), generateConfigText(moduleInfos)
-                .getBytes(Charset.forName("UTF-8")), StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(
+                file.toPath(), generateConfigText(moduleInfos).getBytes(Charset.forName("UTF-8")),
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         return file;
     }
 
