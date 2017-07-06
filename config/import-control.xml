@@ -5,6 +5,8 @@
 
 <import-control pkg="com.github.checkstyle.regression">
     <allow pkg="java.io"/>
+    <allow pkg="java.nio"/>
+    <allow pkg="org.apache.commons.io"/>
     <allow pkg="java.util"/>
     <allow pkg="com.github.checkstyle.regression.data"/>
     <allow pkg="org.immutables.value"/>
@@ -13,7 +15,6 @@
         <allow pkg="javax.xml"/>
         <allow pkg="org.w3c.dom"/>
         <allow pkg="org.xml"/>
-        <allow pkg="java.nio"/>
     </subpackage>
 
     <subpackage name="data">
@@ -24,6 +25,9 @@
     <subpackage name="extract">
         <allow pkg="com.google.gson"/>
         <allow class="java.lang.reflect.Type"/>
+        <allow pkg="org.apache.maven.shared.invoker"/>
+        <!-- we need to run Git checkout command. -->
+        <allow pkg="org.eclipse.jgit"/>
     </subpackage>
 
     <subpackage name="git">
