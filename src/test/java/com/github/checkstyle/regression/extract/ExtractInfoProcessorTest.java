@@ -28,9 +28,13 @@ import static org.mockito.Mockito.spy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.github.checkstyle.regression.data.ImmutableModuleExtractInfo;
@@ -39,18 +43,26 @@ import com.github.checkstyle.regression.data.ModuleExtractInfo;
 public class ExtractInfoProcessorTest {
     private static final String BASE_PACKAGE = "com.puppycrawl.tools.checkstyle";
 
+    private Method getModuleExtractInfosFromReaderMethod;
+
+    @Before
+    public void setUp() throws Exception {
+        getModuleExtractInfosFromReaderMethod = ExtractInfoProcessor.class
+                .getDeclaredMethod("getModuleExtractInfosFromReader", Reader.class);
+        getModuleExtractInfosFromReaderMethod.setAccessible(true);
+    }
+
     @Test
     public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(ExtractInfoProcessor.class);
     }
 
     @Test
-    public void testGetModuleExtractInfosFromReader() {
+    public void testGetModuleExtractInfosFromReader() throws Exception {
         final InputStream is = ExtractInfoProcessor.class.getClassLoader()
                 .getResourceAsStream("checkstyle_modules.json");
         final InputStreamReader reader = new InputStreamReader(is, Charset.forName("UTF-8"));
-        final Map<String, ModuleExtractInfo> map =
-                ExtractInfoProcessor.getModuleExtractInfosFromReader(reader);
+        final Map<String, ModuleExtractInfo> map = getModuleExtractInfosFromReader(reader);
 
         final String module1 = "NewlineAtEndOfFileCheck";
         final ModuleExtractInfo extractInfo1 = ImmutableModuleExtractInfo.builder()
@@ -72,21 +84,28 @@ public class ExtractInfoProcessorTest {
     }
 
     @Test
-    public void testGetNameToModuleInfoFromInputStreamWithException() throws Exception {
+    public void testGetNameToModuleInfosFromInputStreamWithException() throws Exception {
         final InputStream is = spy(ExtractInfoProcessor.class.getClassLoader()
                 .getResourceAsStream("checkstyle_modules.json"));
         final InputStreamReader reader = new InputStreamReader(is, Charset.forName("UTF-8"));
         doThrow(IOException.class).when(is).close();
 
         try {
-            ExtractInfoProcessor.getModuleExtractInfosFromReader(reader);
+            getModuleExtractInfosFromReader(reader);
             fail("Exception is expected");
         }
-        catch (IllegalStateException ex) {
+        catch (InvocationTargetException ex) {
             assertEquals(
                     "Exception message is wrong",
                     "Failed when loaing hardcoded checkstyle module information",
-                    ex.getMessage());
+                    ex.getTargetException().getMessage());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, ModuleExtractInfo> getModuleExtractInfosFromReader(Reader reader)
+            throws Exception {
+        return (Map<String, ModuleExtractInfo>) getModuleExtractInfosFromReaderMethod
+                .invoke(ExtractInfoProcessor.class, reader);
     }
 }

@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -51,13 +53,17 @@ public class ModuleInfoCollectorTest {
     private static final String JAVA_TEST_SOURCE_PREFIX =
             "src/test/java/com/puppycrawl/tools/checkstyle/";
 
+    @SuppressWarnings("unchecked")
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         final InputStream is = ExtractInfoProcessor.class.getClassLoader()
                 .getResourceAsStream("checkstyle_modules.json");
         final InputStreamReader reader = new InputStreamReader(is, Charset.forName("UTF-8"));
+        final Method method = ExtractInfoProcessor.class
+                .getDeclaredMethod("getModuleExtractInfosFromReader", Reader.class);
+        method.setAccessible(true);
         final Map<String, ModuleExtractInfo> map =
-                ExtractInfoProcessor.getModuleExtractInfosFromReader(reader);
+                (Map<String, ModuleExtractInfo>) method.invoke(ExtractInfoProcessor.class, reader);
         ModuleUtils.setNameToModuleExtractInfo(map);
     }
 

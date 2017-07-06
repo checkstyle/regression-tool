@@ -28,6 +28,11 @@
             <version>2.5</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-invoker</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.1</version>
@@ -288,7 +293,22 @@
                                     <regex>
                                         <pattern>com.github.checkstyle.regression.configuration.ConfigGenerator</pattern>
                                         <branchRate>80</branchRate>
-                                        <lineRate>91</lineRate>
+                                        <lineRate>92</lineRate>
+                                    </regex>
+                                    <regex>
+                                        <pattern>com.github.checkstyle.regression.extract.ExtractInfoProcessor</pattern>
+                                        <branchRate>100</branchRate>
+                                        <lineRate>60</lineRate>
+                                    </regex>
+                                    <regex>
+                                        <pattern>com.github.checkstyle.regression.extract.CheckstyleInjector.*</pattern>
+                                        <branchRate>0</branchRate>
+                                        <lineRate>0</lineRate>
+                                    </regex>
+                                    <regex>
+                                        <pattern>com.github.checkstyle.regression.extract.InjectException</pattern>
+                                        <branchRate>0</branchRate>
+                                        <lineRate>0</lineRate>
                                     </regex>
                                     <regex>
                                         <pattern>com.github.checkstyle.regression.module.ModuleUtils</pattern>
