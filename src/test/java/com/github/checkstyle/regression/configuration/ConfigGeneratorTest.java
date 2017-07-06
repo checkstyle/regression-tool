@@ -148,6 +148,16 @@ public class ConfigGeneratorTest {
         assertTrue("Config is not as expected", FileUtils.contentEquals(excepted, actual));
     }
 
+    @Test
+    public void testGenerateConfigToNewFileNoException() throws Exception {
+        final File temp = File.createTempFile("TempNewFile", "");
+        final String path = temp.getPath();
+        // delete the file, to test generating file with mode StandardOpenOption.CREATE
+        temp.delete();
+        final File output = ConfigGenerator.generateConfig(path, Collections.emptyList());
+        outputConfigs.add(output);
+    }
+
     private File generateConfig(List<ModuleInfo> moduleInfos) throws Exception {
         final File temp = File.createTempFile("TestTempConfigOutput", "");
         final String path = temp.getPath();
