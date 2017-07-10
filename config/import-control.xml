@@ -23,7 +23,6 @@
 
     <subpackage name="extract">
         <allow pkg="com.google.gson"/>
-        <allow class="com.sun.tools.javac.util.ServiceLoader"/>
         <allow class="java.lang.reflect.Type"/>
     </subpackage>
 

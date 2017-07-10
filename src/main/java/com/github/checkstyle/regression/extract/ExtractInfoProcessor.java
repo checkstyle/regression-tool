@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 import com.github.checkstyle.regression.data.ModuleExtractInfo;
@@ -31,7 +32,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
-import com.sun.tools.javac.util.ServiceLoader;
 
 /**
  * Processes the module extract info grabbed from checkstyle project.
