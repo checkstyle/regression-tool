@@ -4,6 +4,9 @@
         "http://www.puppycrawl.com/dtds/import_control_1_1.dtd">
 
 <import-control pkg="com.github.checkstyle.regression">
+    <allow pkg="org.apache.commons.cli" local-only="true"/>
+    <allow pkg="com.github.checkstyle.regression" local-only="true"/>
+    <allow pkg="java.text" local-only="true"/>
     <allow pkg="java.io"/>
     <allow pkg="java.nio"/>
     <allow pkg="org.apache.commons.io"/>
