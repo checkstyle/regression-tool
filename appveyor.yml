@@ -61,6 +61,10 @@ environment:
     - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
       DESC: "verify without checkstyle"
       CMD1: "mvn -e verify -Dcheckstyle.ant.skip=true -Dcheckstyle.skip=true"
+    # package no error
+    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+      DESC: "package no error"
+      CMD1: "mvn clean package -Passembly"
 
 build_script:
   - ps: >
