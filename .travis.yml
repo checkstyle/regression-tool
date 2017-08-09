@@ -2,6 +2,9 @@ language: java
 
 sudo: false
 
+before_install:
+  - export M2_HOME=/usr/local/maven-3.3.9
+
 install:
   -
 
@@ -65,6 +68,14 @@ matrix:
       env:
         - DESC="package no error"
         - CMD="mvn clean package -Passembly"
+
+    # checkstyle regression no exception on latest commit (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="checkstyle regression no exception on latest commit"
+        - CMD1="./.ci/travis/checkstyle_regression_no_exception.sh HEAD HEAD^ &&"
+        - CMD2="./.ci/travis/checkstyle_regression_no_exception.sh 44efd23 4b66933 8.1-SNAPSHOT"
+        - CMD="$CMD1$CMD2"
 
 script: eval $CMD
 
