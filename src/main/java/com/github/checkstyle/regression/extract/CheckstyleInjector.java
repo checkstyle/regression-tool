@@ -42,6 +42,9 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
  * @author LuoLiangchen
  */
 final class CheckstyleInjector implements Closeable {
+    /** The injection files to be copied. */
+    private static final String[] INJECTIONS = {"ExtractInfoGeneratorTest.java", "JsonUtil.java"};
+
     /** The path to checkstyle repository. */
     private final String repoPath;
 
@@ -141,8 +144,7 @@ final class CheckstyleInjector implements Closeable {
     private void copyInjectFilesToCheckstyleRepo() throws IOException {
         final String path = "/com/github/checkstyle/regression/extract/";
         final File destDir = new File(repoPath, "src/test/java/com/puppycrawl/tools/checkstyle/");
-        final String[] injections = {"ExtractInfoGeneratorTest.java", "JsonUtil.java"};
-        for (String injection : injections) {
+        for (String injection : INJECTIONS) {
             final File destFile = new File(destDir, injection);
             FileUtils.copyInputStreamToFile(
                     getClass().getResourceAsStream(path + injection), destFile);
