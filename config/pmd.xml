@@ -90,6 +90,9 @@
     <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
     <!-- too much alarms of Checks, we will never move logic out of Check, each Check is independent logic container -->
     <exclude name="GodClass"/>
+    <!--we do not care about this minor overhead, we are not Android application and we do not want to change
+     visibility of methods. Package-private visibility should be avoid almost always.-->
+    <exclude name="AccessorMethodGeneration"/>
   </rule>
 
   <rule ref="rulesets/java/design.xml/ConfusingTernary" />
