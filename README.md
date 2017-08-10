@@ -44,7 +44,7 @@ $ java -jar regression-tool-XX-all.jar -r <arg> -p <arg> [-t <arg>] [--stopAfter
 
 ### Arguments
 
-#### checkstyleLocalRepo (r)
+#### checkstyleRepoPath (r)
 
 The path of the checkstyle repository. **Required, one argument.**
 
@@ -80,7 +80,7 @@ $ java -jar target/regression-tool-XX-all.jar -r /path/to/checkstyle/ -p issue12
 You could also use long options.
 
 ```bash
-$ java -jar target/regression-tool-XX-all.jar --checkstyleLocalRepo /path/to/checkstyle/ --patchBranch issue1234 --checkstyleTesterPath /path/to/contribution/checkstyle-tester/
+$ java -jar target/regression-tool-XX-all.jar --checkstyleRepoPath /path/to/checkstyle/ --patchBranch issue1234 --checkstyleTesterPath /path/to/contribution/checkstyle-tester/
 ```
 
 Generate only the config file and don't generate the report.
