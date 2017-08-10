@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
     <Match>
-        <!-- that CLI class so we need system exit code there, but only in main(...) method -->
-        <Class name="com.puppycrawl.tools.checkstyle.Main"/>
-        <Method name="main"/>
-        <Bug pattern="DM_EXIT"/>
-    </Match>
-    <Match>
         <!-- This is a false positive. It is no problem to do that cast. In fact the cast is
             in JGit library. There is no reason to raise this warning. -->
         <Or>
@@ -20,7 +14,17 @@
     </Match>
     <Match>
         <!-- This is a bug of immutables. hashCode() of a Modifiable class is dangerous. -->
-        <Class name="~.*\.Modifiable.*"/>
-        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+        <Or>
+            <Class name="~.*\.Modifiable.*"/>
+        </Or>
+        <Or>
+            <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+            <Bug pattern="NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION"/>
+        </Or>
+    </Match>
+    <Match>
+        <!-- We can't change generated source code. -->
+        <Class name="~.*\.Immutable.*"/>
+        <Bug pattern="NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION"/>
     </Match>
 </FindBugsFilter>
