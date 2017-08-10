@@ -15,6 +15,7 @@
     <allow pkg="org.immutables.value"/>
 
     <subpackage name="configuration">
+        <allow pkg="java.net"/>
         <allow pkg="javax.xml"/>
         <allow pkg="org.w3c.dom"/>
         <allow pkg="org.xml"/>

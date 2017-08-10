@@ -14,8 +14,6 @@ In most case, it should be your forked repository.
 - Regression-tool uses environment variable `M2_HOME` or system property `maven.home` to find the maven binary files.
 You need to specify either `M2_HOME` or `maven.home` in advance. You could get the path of maven home by running `mvn -v`.
 
-> Temporarily, the tool must be run in the same directory as source code. This would be fix soon.
-
 ### Clone
 
 Just clone this repository to your local.
@@ -93,6 +91,6 @@ $ java -jar target/regression-tool-XX-all.jar -r /path/to/checkstyle/ -p issue12
 
 ### Output
 
-The config file would be generated in `regression-tool` directory.
+The config file would be generated in current working directory.
 
 The report would be generated somewhere in TBD.

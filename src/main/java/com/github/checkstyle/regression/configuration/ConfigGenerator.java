@@ -22,6 +22,8 @@ package com.github.checkstyle.regression.configuration;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -82,12 +84,12 @@ public final class ConfigGenerator {
         final Document document;
 
         try {
-            final File baseConfig = new File("src/main/resources/com/github/checkstyle/regression/"
-                    + "configuration/base_config.xml");
+            final URL baseConfig = ConfigGenerator.class.getResource(
+                    "/com/github/checkstyle/regression/configuration/base_config.xml");
             document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(baseConfig);
+                    .parse(baseConfig.toURI().toString());
         }
-        catch (ParserConfigurationException | SAXException | IOException ex) {
+        catch (ParserConfigurationException | SAXException | IOException | URISyntaxException ex) {
             throw new IllegalStateException("cannot instantiate Document instance", ex);
         }
 
