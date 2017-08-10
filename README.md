@@ -41,12 +41,12 @@ $ mvn clean package -Passembly
 ## Usage
 
 ```bash
-$ java -jar regression-tool-XX-all.jar -p <arg> -r <arg> [--stopAfterGenerateConfig] [-t <arg>]
+$ java -jar regression-tool-XX-all.jar -r <arg> -p <arg> [-t <arg>] [--stopAfterConfigGeneration]
 ```
 
 ### Arguments
 
-#### localGitRepo (r)
+#### checkstyleLocalRepo (r)
 
 The path of the checkstyle repository. **Required, one argument.**
 
@@ -54,7 +54,7 @@ The path of the checkstyle repository. **Required, one argument.**
 
 The name of the PR branch, which would be compared with the master. **Required, one argument.**
 
-#### stopAfterGenerateConfig
+#### stopAfterConfigGeneration
 
 Indicates that regression-tool would stop after generating config. By default, the tool would generate 
 the diff report after generating config. **Optional, no argument.**
@@ -66,7 +66,7 @@ you could use this mode.
 
 #### checkstyleTesterPath (t)
 
-The path of the checkstyle-tester directory. If you are **NOT** using `--stopAfterGenerateConfig` mode, this 
+The path of the checkstyle-tester directory. If you are **NOT** using `--stopAfterConfigGeneration` mode, this 
 option is required, otherwise this could be absent. **Optional, one argument.**
 
 ### Example
@@ -82,13 +82,13 @@ $ java -jar target/regression-tool-XX-all.jar -r /path/to/checkstyle/ -p issue12
 You could also use long options.
 
 ```bash
-$ java -jar target/regression-tool-XX-all.jar --localGitRepo /path/to/checkstyle/ --patchBranch issue1234 --checkstyleTesterPath /path/to/contribution/checkstyle-tester/
+$ java -jar target/regression-tool-XX-all.jar --checkstyleLocalRepo /path/to/checkstyle/ --patchBranch issue1234 --checkstyleTesterPath /path/to/contribution/checkstyle-tester/
 ```
 
 Generate only the config file and don't generate the report.
 
 ```bash
-$ java -jar target/regression-tool-XX-all.jar -r /path/to/checkstyle/ -p issue1234 --stopAfterGenerateConfig
+$ java -jar target/regression-tool-XX-all.jar -r /path/to/checkstyle/ -p issue1234 --stopAfterConfigGeneration
 ```
 
 ### Output

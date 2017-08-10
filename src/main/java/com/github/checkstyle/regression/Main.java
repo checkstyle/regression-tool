@@ -22,6 +22,7 @@ package com.github.checkstyle.regression;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +54,7 @@ import com.github.checkstyle.regression.report.ReportGenerator;
  */
 public final class Main {
     /** Option name of the local checkstyle repository path. */
-    private static final String OPT_LOCAL_GIT_REPO = "localGitRepo";
+    private static final String OPT_CHECKSTYLE_REPO_PATH = "checkstyleRepoPath";
 
     /** Option name of the PR branch name. */
     private static final String OPT_PATCH_BRANCH = "patchBranch";
@@ -62,7 +63,12 @@ public final class Main {
     private static final String OPT_CHECKSTYLE_TESTER_PATH = "checkstyleTesterPath";
 
     /** Option name of whether to stop after generating config. */
-    private static final String OPT_STOP_AFTER_GENERATE_CONFIG = "stopAfterGenerateConfig";
+    private static final String OPT_STOP_AFTER_CONFIG_GENERATION = "stopAfterConfigGeneration";
+
+    /** The option order to be shown in the help text. */
+    private static final List<String> OPT_ORDER = Arrays.asList(
+            OPT_CHECKSTYLE_REPO_PATH, OPT_PATCH_BRANCH,
+            OPT_CHECKSTYLE_TESTER_PATH, OPT_STOP_AFTER_CONFIG_GENERATION);
 
     /** Prevents instantiation. */
     private Main() {
@@ -77,6 +83,11 @@ public final class Main {
         final Options options = createOptions();
         final CommandLineParser parser = new DefaultParser();
         final HelpFormatter formatter = new HelpFormatter();
+        formatter.setOptionComparator((first, second) -> {
+            final int indexFirst = OPT_ORDER.indexOf(first.getLongOpt());
+            final int indexSecond = OPT_ORDER.indexOf(second.getLongOpt());
+            return Integer.compare(indexFirst, indexSecond);
+        });
         CommandLine cmd = null;
 
         try {
@@ -89,11 +100,11 @@ public final class Main {
         }
 
         final Arguments arguments = ImmutableArguments.builder()
-                .repoPath(cmd.getOptionValue(OPT_LOCAL_GIT_REPO))
+                .checkstyleRepoPath(cmd.getOptionValue(OPT_CHECKSTYLE_REPO_PATH))
                 .branch(cmd.getOptionValue(OPT_PATCH_BRANCH))
                 .checkstyleTesterPath(
                         Optional.ofNullable(cmd.getOptionValue(OPT_CHECKSTYLE_TESTER_PATH)))
-                .stopAfterGenerateConfig(cmd.hasOption(OPT_STOP_AFTER_GENERATE_CONFIG))
+                .stopAfterConfigGeneration(cmd.hasOption(OPT_STOP_AFTER_CONFIG_GENERATION))
                 .build();
 
         validateArguments(arguments);
@@ -108,7 +119,7 @@ public final class Main {
         final Options options = new Options();
 
         final Option repo = Option.builder("r")
-                .longOpt(OPT_LOCAL_GIT_REPO)
+                .longOpt(OPT_CHECKSTYLE_REPO_PATH)
                 .required()
                 .hasArg()
                 .desc("the path of the checkstyle repository")
@@ -132,13 +143,13 @@ public final class Main {
                 .build();
         options.addOption(tester);
 
-        final Option stopAfterGenerateConfig = Option.builder()
-                .longOpt(OPT_STOP_AFTER_GENERATE_CONFIG)
+        final Option stopAfterConfigGeneration = Option.builder()
+                .longOpt(OPT_STOP_AFTER_CONFIG_GENERATION)
                 .required(false)
                 .hasArg(false)
                 .desc("indicates that regression tool would stop after generating config")
                 .build();
-        options.addOption(stopAfterGenerateConfig);
+        options.addOption(stopAfterConfigGeneration);
 
         return options;
     }
@@ -149,11 +160,11 @@ public final class Main {
      * @throws IllegalArgumentException the arguments are invalid
      */
     private static void validateArguments(Arguments args) {
-        if (!existAndIsDirectory(args.repoPath())) {
+        if (!existAndIsDirectory(args.checkstyleRepoPath())) {
             throw new IllegalArgumentException(
                     "path of local git repo must exist and be a directory");
         }
-        if (!args.stopAfterGenerateConfig()) {
+        if (!args.stopAfterConfigGeneration()) {
             if (args.checkstyleTesterPath().isPresent()) {
                 if (!existAndIsDirectory(args.checkstyleTesterPath().get())) {
                     throw new IllegalArgumentException(
@@ -161,8 +172,8 @@ public final class Main {
                 }
             }
             else {
-                throw new IllegalArgumentException("missing checkstyleTesterPath, "
-                        + "which is required if you are not using --stopAfterGenerateConfig mode");
+                throw new IllegalArgumentException("missing checkstyleTesterPath, which is "
+                        + "required if you are not using --stopAfterConfigGeneration mode");
             }
         }
     }
@@ -175,9 +186,9 @@ public final class Main {
     private static void runRegression(Arguments args) throws Exception {
         final File config = generateConfig(args);
         System.out.println("config generated at " + config.getAbsolutePath());
-        if (!args.stopAfterGenerateConfig()) {
-            final File report = ReportGenerator.generate(
-                    args.checkstyleTesterPath().get(), args.repoPath(), args.branch(), config);
+        if (!args.stopAfterConfigGeneration()) {
+            final File report = ReportGenerator.generate(args.checkstyleTesterPath().get(),
+                    args.checkstyleRepoPath(), args.branch(), config);
             System.out.println("report generated at " + report.getAbsolutePath());
         }
     }
@@ -190,9 +201,9 @@ public final class Main {
      */
     private static File generateConfig(Arguments args)
             throws Exception {
-        final List<GitChange> changes = DiffParser.parse(args.repoPath(), args.branch());
-        final Map<String, ModuleExtractInfo> extractInfos =
-                ExtractInfoProcessor.getModuleExtractInfos(args.repoPath(), args.branch());
+        final List<GitChange> changes = DiffParser.parse(args.checkstyleRepoPath(), args.branch());
+        final Map<String, ModuleExtractInfo> extractInfos = ExtractInfoProcessor
+                .getModuleExtractInfos(args.checkstyleRepoPath(), args.branch());
         ModuleUtils.setNameToModuleExtractInfo(extractInfos);
         final List<ModuleInfo> moduleInfos = ModuleCollector.generate(changes);
         final DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
@@ -218,7 +229,7 @@ public final class Main {
          * The local checkstyle repository path.
          * @return the local checkstyle repository path
          */
-        String repoPath();
+        String checkstyleRepoPath();
 
         /**
          * The PR branch name.
@@ -236,6 +247,6 @@ public final class Main {
          * Whether to stop after generating config.
          * @return whether to stop after generating config
          */
-        boolean stopAfterGenerateConfig();
+        boolean stopAfterConfigGeneration();
     }
 }
