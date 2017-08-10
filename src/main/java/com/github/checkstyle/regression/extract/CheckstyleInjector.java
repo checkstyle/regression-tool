@@ -139,14 +139,13 @@ final class CheckstyleInjector implements Closeable {
      * @throws IOException failure of copying
      */
     private void copyInjectFilesToCheckstyleRepo() throws IOException {
-        final File srcDir =
-                new File("src/main/resources/com/github/checkstyle/regression/extract/");
+        final String path = "/com/github/checkstyle/regression/extract/";
         final File destDir = new File(repoPath, "src/test/java/com/puppycrawl/tools/checkstyle/");
         final String[] injections = {"ExtractInfoGeneratorTest.java", "JsonUtil.java"};
         for (String injection : injections) {
-            final File srcFile = new File(srcDir, injection);
             final File destFile = new File(destDir, injection);
-            FileUtils.copyFile(srcFile, destFile);
+            FileUtils.copyInputStreamToFile(
+                    getClass().getResourceAsStream(path + injection), destFile);
         }
     }
 
