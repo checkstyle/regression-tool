@@ -79,6 +79,7 @@ public class DiffParserTest {
             assertEquals("There should be 1 change detected", 1, changes.size());
             final GitChange expected = ImmutableGitChange.builder()
                     .path("HelloWorld")
+                    .addAddedLines(0)
                     .build();
             assertEquals("The change is not as expected", expected, changes.get(0));
         }
@@ -201,6 +202,73 @@ public class DiffParserTest {
                         .build();
                 assertEquals("The change is not as expected", expected, changes.get(0));
             }
+        }
+    }
+
+    @Test
+    public void testParseLineChangesAddLine() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            final File helloWorld = GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            Files.write(helloWorld.toPath(), "line 0\n"
+                    .getBytes(Charset.forName("UTF-8")), StandardOpenOption.APPEND);
+            GitUtils.addAllAndCommit(repository, "add original line");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            Files.write(helloWorld.toPath(), "line 1 added\nline 2 added\n"
+                    .getBytes(Charset.forName("UTF-8")), StandardOpenOption.APPEND);
+            GitUtils.addAllAndCommit(repository, "add line 1, 2");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("HelloWorld")
+                    .addAddedLines(1, 2)
+                    .build();
+            assertEquals("The change is not as expected", expected, changes.get(0));
+        }
+    }
+
+    @Test
+    public void testParseLineChangesRemoveLine() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            final File helloWorld = GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            Files.write(helloWorld.toPath(), "line 0\nline 1 to be removed\nline 2 to be removed\n"
+                    .getBytes(Charset.forName("UTF-8")), StandardOpenOption.APPEND);
+            GitUtils.addAllAndCommit(repository, "add original three lines");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            Files.write(helloWorld.toPath(), "line 0\n"
+                    .getBytes(Charset.forName("UTF-8")), StandardOpenOption.TRUNCATE_EXISTING);
+            GitUtils.addAllAndCommit(repository, "remove two lines");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("HelloWorld")
+                    .addDeletedLines(1, 2)
+                    .build();
+            assertEquals("The change is not as expected", expected, changes.get(0));
+        }
+    }
+
+    @Test
+    public void testParseLineChangesModifyLine() throws Exception {
+        try (Repository repository = GitUtils.createNewRepository()) {
+            final File helloWorld = GitUtils.addAnEmptyFileAndCommit(repository, "HelloWorld");
+            Files.write(helloWorld.toPath(), "line 0\nline 1\nline 2\n"
+                    .getBytes(Charset.forName("UTF-8")), StandardOpenOption.APPEND);
+            GitUtils.addAllAndCommit(repository, "add original three lines");
+            GitUtils.createNewBranchAndCheckout(repository, "foo");
+            Files.write(helloWorld.toPath(), "line 0\nline 1 changed\nline 2 changed\n"
+                    .getBytes(Charset.forName("UTF-8")), StandardOpenOption.TRUNCATE_EXISTING);
+            GitUtils.addAllAndCommit(repository, "modify two lines");
+            final List<GitChange> changes = DiffParser.parse(
+                    repository.getDirectory().getParent(), "foo");
+            assertEquals("There should be 1 change detected", 1, changes.size());
+            final GitChange expected = ImmutableGitChange.builder()
+                    .path("HelloWorld")
+                    .addAddedLines(1, 2)
+                    .addDeletedLines(1, 2)
+                    .build();
+            assertEquals("The change is not as expected", expected, changes.get(0));
         }
     }
 }

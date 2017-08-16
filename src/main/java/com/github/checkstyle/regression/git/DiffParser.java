@@ -21,12 +21,16 @@ package com.github.checkstyle.regression.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.math.IntRange;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -36,6 +40,7 @@ import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import com.github.checkstyle.regression.data.GitChange;
 import com.github.checkstyle.regression.data.ImmutableGitChange;
@@ -44,6 +49,7 @@ import com.github.checkstyle.regression.data.ImmutableGitChange;
  * Parses git diff between PR branch and master for the further use.
  * @author LuoLiangchen
  */
+// -@cs[ClassDataAbstractionCoupling] We have to import many classes from JGit
 public final class DiffParser {
     /** Prevents instantiation. */
     private DiffParser() {
@@ -59,7 +65,7 @@ public final class DiffParser {
      */
     public static List<GitChange> parse(String repositoryPath, String branchName)
             throws IOException, GitAPIException {
-        final List<GitChange> returnValue;
+        final List<GitChange> returnValue = new LinkedList<>();
         final File gitDir = new File(repositoryPath, ".git");
         final Repository repository = new FileRepositoryBuilder().setGitDir(gitDir)
                 .readEnvironment().findGitDir().build();
@@ -67,16 +73,20 @@ public final class DiffParser {
         try {
             final TreeParserPair pair = getTreeParserPair(repository, branchName);
             final Git git = new Git(repository);
+            final DiffFormatter formatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
+            formatter.setRepository(repository);
 
             try {
-                returnValue = git.diff()
+                final List<DiffEntry> diffs = git.diff()
                         .setOldTree(pair.commonAncestorTreeParser)
                         .setNewTree(pair.prTreeParser)
                         .call()
                         .stream()
                         .filter(entry -> entry.getChangeType() != DiffEntry.ChangeType.DELETE)
-                        .map(DiffParser::convertDiffEntryToGitChange)
                         .collect(Collectors.toList());
+                for (DiffEntry diff : diffs) {
+                    returnValue.add(convertDiffEntryToGitChange(diff, formatter));
+                }
             }
             finally {
                 git.close();
@@ -158,11 +168,28 @@ public final class DiffParser {
     /**
      * Converts a {@link DiffEntry} to {@link GitChange} for the further use.
      * @param diffEntry the {@link DiffEntry} instance to be converted
+     * @param formatter the diff formatter to provide the line changes information
      * @return the {@link GitChange} instance converted from the given {@link DiffEntry}
+     * @throws IOException JGit library exception
      */
-    private static GitChange convertDiffEntryToGitChange(DiffEntry diffEntry) {
+    private static GitChange convertDiffEntryToGitChange(
+            DiffEntry diffEntry, DiffFormatter formatter) throws IOException {
+        final List<Integer> addedLines = formatter.toFileHeader(diffEntry).toEditList().stream()
+                .filter(edit -> edit.getBeginB() < edit.getEndB())
+                .flatMapToInt(edit -> Arrays.stream(
+                        new IntRange(edit.getBeginB(), edit.getEndB() - 1).toArray()))
+                .boxed()
+                .collect(Collectors.toList());
+        final List<Integer> deletedLines = formatter.toFileHeader(diffEntry).toEditList().stream()
+                .filter(edit -> edit.getBeginA() < edit.getEndA())
+                .flatMapToInt(edit -> Arrays.stream(
+                        new IntRange(edit.getBeginA(), edit.getEndA() - 1).toArray()))
+                .boxed()
+                .collect(Collectors.toList());
         return ImmutableGitChange.builder()
                 .path(diffEntry.getNewPath())
+                .addAllAddedLines(addedLines)
+                .addAllDeletedLines(deletedLines)
                 .build();
     }
 
