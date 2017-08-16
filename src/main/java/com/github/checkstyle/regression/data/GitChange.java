@@ -19,6 +19,8 @@
 
 package com.github.checkstyle.regression.data;
 
+import java.util.List;
+
 import org.immutables.value.Value;
 
 /**
@@ -32,4 +34,18 @@ public interface GitChange {
      * @return the path of the changed file
      */
     String path();
+
+    /**
+     * The line numbers of the added changes.
+     * The first line of a file is marked as line zero.
+     * @return the line numbers of the added changes
+     */
+    List<Integer> addedLines();
+
+    /**
+     * The line numbers of the deleted changes.
+     * The first line of a file is marked as line zero.
+     * @return the line numbers of the deleted changes
+     */
+    List<Integer> deletedLines();
 }

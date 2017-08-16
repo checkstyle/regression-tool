@@ -49,5 +49,6 @@
 
     <subpackage name="git">
         <allow pkg="org.eclipse.jgit"/>
+        <allow pkg="org.apache.commons.lang"/>
     </subpackage>
 </import-control>
