@@ -46,6 +46,9 @@ public class ModuleUtilsTest {
     private static final String JAVA_MAIN_SOURCE_PREFIX =
             "src/main/java/com/puppycrawl/tools/checkstyle/";
 
+    private static final String JAVA_TEST_SOURCE_PREFIX =
+            "src/test/java/com/puppycrawl/tools/checkstyle/";
+
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
@@ -86,7 +89,7 @@ public class ModuleUtilsTest {
     @Test
     public void testIsCheckstyleModuleNonMainFile() {
         final GitChange change = ImmutableGitChange.builder()
-                .path("src/test/java/foo/Foo.java")
+                .path("backup/test/java/foo/Foo.java")
                 .build();
         final boolean result =
                 ModuleUtils.isCheckstyleModule(change);
@@ -94,10 +97,66 @@ public class ModuleUtilsTest {
     }
 
     @Test
-    public void testConvertModuleChangeToExtractInfo() {
+    public void testIsCheckstyleUtility() {
+        final GitChange change = ImmutableGitChange.builder()
+                .path(JAVA_MAIN_SOURCE_PREFIX + "utils/CheckUtils.java")
+                .build();
+        final boolean result = ModuleUtils.isCheckstyleUtility(change);
+        assertTrue("CheckUtils should be considered as a checkstyle utility", result);
+    }
+
+    @Test
+    public void testIsCheckstyleUtilityNonUtility() {
         final GitChange change = ImmutableGitChange.builder()
                 .path(JAVA_MAIN_SOURCE_PREFIX + "checks/coding/EmptyStatementCheck.java")
                 .build();
+        final boolean result = ModuleUtils.isCheckstyleUtility(change);
+        assertFalse("EmptyStatementCheck should not be considered as a checkstyle utility",
+                result);
+    }
+
+    @Test
+    public void testIsCheckstyleUtilityNonMainFile() {
+        final GitChange change = ImmutableGitChange.builder()
+                .path("src/test/java/foo/Foo.java")
+                .build();
+        final boolean result =
+                ModuleUtils.isCheckstyleUtility(change);
+        assertFalse("Non main file should not be consideres as a checkstyle utility", result);
+    }
+
+    @Test
+    public void testIsCheckstyleModuleTest() {
+        final GitChange change = ImmutableGitChange.builder()
+                .path(JAVA_TEST_SOURCE_PREFIX + "checks/coding/EmptyStatementCheckTest.java")
+                .build();
+        final boolean result = ModuleUtils.isCheckstyleModuleTest(change);
+        assertTrue("EmptyStatementCheckTest should be considered as a checkstyle module test",
+                result);
+    }
+
+    @Test
+    public void testIsCheckstyleModuleTestNonTestClass() {
+        final GitChange change = ImmutableGitChange.builder()
+                .path(JAVA_TEST_SOURCE_PREFIX + "internal/CheckUtil.java")
+                .build();
+        final boolean result = ModuleUtils.isCheckstyleModuleTest(change);
+        assertFalse("CheckUtil should not be considered as a checkstyle module test",
+                result);
+    }
+
+    @Test
+    public void testIsCheckstyleModuleTestNonTestFile() {
+        final GitChange change = ImmutableGitChange.builder()
+                .path("backup/test/java/foo/Foo.java")
+                .build();
+        final boolean result = ModuleUtils.isCheckstyleModuleTest(change);
+        assertFalse("CheckUtil should not be considered as a checkstyle module test",
+                result);
+    }
+
+    @Test
+    public void testConvertModuleChangeToExtractInfo() {
         final ModuleExtractInfo moduleExtractInfo = ModuleUtils
                 .getModuleExtractInfo(BASE_PACKAGE + ".checks.coding.EmptyStatementCheck");
         final ModuleExtractInfo expected = ImmutableModuleExtractInfo.builder()
