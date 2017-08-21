@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.checkstyle.regression.data.ImmutableModuleExtractInfo;
+import com.github.checkstyle.regression.data.ImmutableModuleProperty;
 import com.github.checkstyle.regression.data.ModuleExtractInfo;
 
 public class ExtractInfoProcessorTest {
@@ -69,6 +70,14 @@ public class ExtractInfoProcessorTest {
                 .name(module1)
                 .packageName(BASE_PACKAGE + ".checks")
                 .parent("Checker")
+                .addProperties(ImmutableModuleProperty.builder()
+                        .name("fileExtensions")
+                        .type("String[]")
+                        .build())
+                .addProperties(ImmutableModuleProperty.builder()
+                        .name("lineSeparator")
+                        .type("String")
+                        .build())
                 .build();
         final String module2 = "EmptyStatementCheck";
         final ModuleExtractInfo extractInfo2 = ImmutableModuleExtractInfo.builder()

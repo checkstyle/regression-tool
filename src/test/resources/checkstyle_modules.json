@@ -12,6 +12,16 @@
       "com.puppycrawl.tools.checkstyle.api.FileSetCheck",
       "com.puppycrawl.tools.checkstyle.api.Configurable",
       "com.puppycrawl.tools.checkstyle.api.Contextualizable"
+    ],
+    "properties": [
+      {
+        "name": "fileExtensions",
+        "type": "String[]"
+      },
+      {
+        "name": "lineSeparator",
+        "type": "String"
+      }
     ]
   },
   {
@@ -26,6 +36,9 @@
     "interfaces": [
       "com.puppycrawl.tools.checkstyle.api.Configurable",
       "com.puppycrawl.tools.checkstyle.api.Contextualizable"
+    ],
+    "properties": [
+
     ]
   }
 ]

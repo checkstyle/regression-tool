@@ -19,6 +19,8 @@
 
 package com.github.checkstyle.regression.data;
 
+import java.util.List;
+
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
@@ -49,10 +51,45 @@ public abstract class ModuleExtractInfo {
     public abstract String parent();
 
     /**
+     * The properties of this module.
+     * @return the properties of this module
+     */
+    public abstract List<ModuleProperty> properties();
+
+    /**
      * The full qualified name of this module.
      * @return the full qualified name of this module
      */
     public String fullName() {
         return packageName() + "." + name();
+    }
+
+    /** Represents a property of checkstyle module. */
+    @Gson.TypeAdapters
+    @Value.Immutable
+    public interface ModuleProperty {
+        /**
+         * The name of this property.
+         * @return the name of this property
+         */
+        String name();
+
+        /**
+         * The type of this property.
+         * The value should be one of the followings:
+         *     - Pattern
+         *     - SeverityLevel
+         *     - boolean
+         *     - Scope
+         *     - double[]
+         *     - int[]
+         *     - String[]
+         *     - String
+         *     - URI
+         *     - AccessModifier[]
+         *     - int
+         * @return the type of this property
+         */
+        String type();
     }
 }
