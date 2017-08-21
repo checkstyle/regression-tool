@@ -34,7 +34,11 @@
     <!-- we use class comments as source for xdoc files, so content is big and that is by design -->
     <exclude name="CommentSize"/>
   </rule>
-  <rule ref="rulesets/java/comments.xml/CommentRequired" />
+  <rule ref="rulesets/java/comments.xml/CommentRequired">
+    <properties>
+      <property name="violationSuppressXPath" value="//Annotation/MarkerAnnotation//Name[@Image='Override']"/>
+    </properties>
+  </rule>
   <rule ref="rulesets/java/comments.xml/CommentSize">
     <properties>
       <!-- we use class comments as source for xdoc files, so content is big and that is by design -->
