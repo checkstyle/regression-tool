@@ -4,5 +4,5 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <suppress checks="MultipleStringLiteralsExtended" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="MultipleStringLiteralsExtended" files="[\\/]ExtractInfoGeneratorTest.java$|.*[\\/]src[\\/]test[\\/]"/>
 </suppressions>

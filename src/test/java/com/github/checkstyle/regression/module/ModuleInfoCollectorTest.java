@@ -39,6 +39,7 @@ import com.github.checkstyle.regression.data.GitChange;
 import com.github.checkstyle.regression.data.ImmutableGitChange;
 import com.github.checkstyle.regression.data.ImmutableModuleExtractInfo;
 import com.github.checkstyle.regression.data.ImmutableModuleInfo;
+import com.github.checkstyle.regression.data.ImmutableModuleProperty;
 import com.github.checkstyle.regression.data.ModuleExtractInfo;
 import com.github.checkstyle.regression.data.ModuleInfo;
 import com.github.checkstyle.regression.extract.ExtractInfoProcessor;
@@ -117,6 +118,14 @@ public class ModuleInfoCollectorTest {
                 .name("NewlineAtEndOfFileCheck")
                 .packageName(BASE_PACKAGE + ".checks")
                 .parent("Checker")
+                .addProperties(ImmutableModuleProperty.builder()
+                        .name("fileExtensions")
+                        .type("String[]")
+                        .build())
+                .addProperties(ImmutableModuleProperty.builder()
+                        .name("lineSeparator")
+                        .type("String")
+                        .build())
                 .build();
         final List<ModuleInfo> moduleInfos =
                 ModuleCollector.generate(changes);

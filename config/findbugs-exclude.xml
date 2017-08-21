@@ -27,4 +27,9 @@
         <Class name="~.*\.Immutable.*"/>
         <Bug pattern="NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION"/>
     </Match>
+    <Match>
+        <!-- We can't change generated source code. -->
+        <Class name="~.*\.GsonAdapters.*"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
 </FindBugsFilter>

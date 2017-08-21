@@ -13,7 +13,7 @@
     <suppress checks="MagicNumber" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="AvoidStaticImport" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="WriteTag" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="MultipleStringLiterals" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="MultipleStringLiterals" files="[\\/]ExtractInfoGeneratorTest.java$|.*[\\/]src[\\/]test[\\/]"/>
 
     <suppress checks="AbstractClassName" files=".*[\\/]data[\\/]"/>
 </suppressions>
