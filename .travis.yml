@@ -80,7 +80,7 @@ matrix:
     - jdk: oraclejdk8
       env:
         - DESC="checkstyle regression no exception, changes to check"
-        - CMD="./.ci/travis/checkstyle_regression_no_exception.sh 44efd23 4b66933 8.1-SNAPSHOT"
+        - CMD="./.ci/travis/checkstyle_regression_no_exception.sh f0ed29b d2e0c4c 8.5-SNAPSHOT"
 
 script: eval $CMD
 

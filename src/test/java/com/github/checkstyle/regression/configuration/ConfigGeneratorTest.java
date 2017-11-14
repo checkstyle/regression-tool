@@ -20,7 +20,9 @@
 package com.github.checkstyle.regression.configuration;
 
 import static com.github.checkstyle.regression.configuration.ConfigGenerator.DOCTYPE_PUBLIC;
+import static com.github.checkstyle.regression.internal.FileUtils.readFile;
 import static com.github.checkstyle.regression.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -84,7 +86,7 @@ public class ConfigGeneratorTest {
         final File excepted = getExpectedXml("expected_empty_module_infos.xml");
 
         final File actual = generateConfig(Collections.emptyList());
-        assertTrue("Config is not as expected", FileUtils.contentEquals(excepted, actual));
+        assertEquals("Config is not as expected", readFile(excepted), readFile(actual));
     }
 
     @Test
@@ -102,7 +104,7 @@ public class ConfigGeneratorTest {
 
         final File actual = generateConfig(Collections.singletonList(moduleInfo));
 
-        assertTrue("Config is not as expected", FileUtils.contentEquals(excepted, actual));
+        assertEquals("Config is not as expected", readFile(excepted), readFile(actual));
     }
 
     @Test
@@ -119,7 +121,7 @@ public class ConfigGeneratorTest {
                 .build();
 
         final File actual = generateConfig(Collections.singletonList(moduleInfo));
-        assertTrue("Config is not as expected", FileUtils.contentEquals(excepted, actual));
+        assertEquals("Config is not as expected", readFile(excepted), readFile(actual));
     }
 
     @Test
@@ -145,7 +147,7 @@ public class ConfigGeneratorTest {
                 .build();
 
         final File actual = generateConfig(Arrays.asList(moduleInfo1, moduleInfo2));
-        assertTrue("Config is not as expected", FileUtils.contentEquals(excepted, actual));
+        assertEquals("Config is not as expected", readFile(excepted), readFile(actual));
     }
 
     @Test

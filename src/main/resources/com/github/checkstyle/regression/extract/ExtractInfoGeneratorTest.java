@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.internal.CheckUtil;
+import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
 
 /**
