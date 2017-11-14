@@ -29,7 +29,7 @@ import org.powermock.reflect.Whitebox;
 
 public class CheckstyleInjectorTest {
     @Test
-    public void testAllInjectionFilesAreInCopyList() throws Exception {
+    public void testAllInjectionFilesAreInCopyList() {
         final String[] injections =
                 Whitebox.getInternalState(CheckstyleInjector.class, "INJECTIONS");
         final File srcDir = new File("src/main/resources/com/github/checkstyle/regression/extract");
