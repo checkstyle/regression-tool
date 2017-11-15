@@ -79,7 +79,7 @@ public final class Main {
      * @param args the CLI arguments
      * @throws Exception execute failure
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String... args) throws Exception {
         final Options options = createOptions();
         final CommandLineParser parser = new DefaultParser();
         final HelpFormatter formatter = new HelpFormatter();
@@ -96,7 +96,7 @@ public final class Main {
         catch (ParseException ex) {
             System.err.println(ex.getMessage());
             formatter.printHelp("java -jar regression-tool.jar", options, true);
-            System.exit(1);
+            System.exit(-1);
         }
 
         final Arguments arguments = ImmutableArguments.builder()
