@@ -25,9 +25,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 public final class FileUtils {
-    protected static final String LF_REGEX = "\n";
+    private static final String LF_REGEX = "\n";
 
-    protected static final String CRLF_REGEX = "\\r\\n";
+    private static final String CRLF_REGEX = "\\r\\n";
 
     private FileUtils() {
     }

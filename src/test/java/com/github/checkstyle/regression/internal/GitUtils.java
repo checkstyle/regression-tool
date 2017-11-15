@@ -80,10 +80,8 @@ public final class GitUtils {
             throws IOException, GitAPIException {
         try (Git git = new Git(repository)) {
             final File file = new File(repository.getDirectory().getParent(), fileName);
-            if (!file.getParentFile().exists()) {
-                if (!file.getParentFile().mkdirs()) {
-                    throw new IOException("Could not create directory " + file.getParentFile());
-                }
+            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+                throw new IOException("Could not create directory " + file.getParentFile());
             }
             if (!file.createNewFile()) {
                 throw new IOException("Could not create file " + file);
