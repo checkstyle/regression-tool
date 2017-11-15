@@ -67,6 +67,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.16.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.7.3</version>
@@ -447,8 +453,8 @@
                                 <regexes>
                                     <regex>
                                         <pattern>com.github.checkstyle.regression.Main</pattern>
-                                        <branchRate>0</branchRate>
-                                        <lineRate>0</lineRate>
+                                        <branchRate>75</branchRate>
+                                        <lineRate>77</lineRate>
                                     </regex>
                                     <regex>
                                         <pattern>com.github.checkstyle.regression.configuration.ConfigGenerator</pattern>
