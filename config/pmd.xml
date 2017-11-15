@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
          http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-    PMD ruleset for Checkstyle Regression Tool
+    PMD common ruleset for Checkstyle Regression Tool
   </description>
   <rule ref="rulesets/java/basic.xml"/>
   <rule ref="rulesets/java/braces.xml"/>
@@ -28,6 +28,7 @@
   <rule ref="rulesets/java/codesize.xml/TooManyMethods" />
   <rule ref="rulesets/java/codesize.xml/ExcessiveClassLength" />
   <rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength" />
+  <rule ref="rulesets/java/codesize.xml/ExcessiveParameterList" />
 
   <rule ref="rulesets/java/comments.xml">
     <!-- <exclude name="CommentRequired"/> -->
@@ -99,7 +100,6 @@
   <rule ref="rulesets/java/design.xml/AccessorClassGeneration" />
   <rule ref="rulesets/java/design.xml/PreserveStackTrace" />
   <rule ref="rulesets/java/design.xml/EmptyMethodInAbstractClassShouldBeAbstract" />
-  <rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod" />
 
   <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
     <properties>
@@ -108,6 +108,7 @@
     </properties>
   </rule>
 
+  <rule ref="rulesets/java/design.xml/AvoidSynchronizedAtMethodLevel" />
   <rule ref="rulesets/java/empty.xml"/>
   <rule ref="rulesets/java/empty.xml/EmptyCatchBlock">
     <properties>
@@ -121,7 +122,6 @@
     <!-- too many false-positives -->
     <exclude name="BeanMembersShouldSerialize"/>
   </rule>
-  <rule ref="rulesets/java/junit.xml"/>
   <rule ref="rulesets/java/logging-jakarta-commons.xml"/>
 
   <rule ref="rulesets/java/logging-java.xml"/>
@@ -195,12 +195,6 @@
   </rule>
   <rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException" />
   <rule ref="rulesets/java/strictexception.xml/AvoidThrowingRawExceptionTypes" />
-  <rule ref="rulesets/java/strictexception.xml/SignatureDeclareThrowsException">
-    <properties>
-      <!-- it is ok to throw exception in top level class -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='Main'] and //MethodDeclaration[@Name='main']"/>
-    </properties>
-  </rule>
 
   <rule ref="rulesets/java/strings.xml"/>
   <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
