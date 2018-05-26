@@ -68,7 +68,8 @@ public class ExtractInfoGeneratorTest {
 
         final String name = clazz.getSimpleName();
         final String parent;
-        if (ModuleReflectionUtils.isCheckstyleCheck(clazz)) {
+        if (ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(clazz)
+                || ModuleReflectionUtils.isTreeWalkerFilterModule(clazz)) {
             parent = "TreeWalker";
         }
         else if (ModuleReflectionUtils.isRootModule(clazz)) {
