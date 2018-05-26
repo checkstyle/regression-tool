@@ -44,7 +44,7 @@ public final class ReportGenerator {
     public static File generate(
             String testerPath, String repoPath, String branch, File configFile)
             throws InterruptedException, IOException {
-        final Process process = new ProcessBuilder()
+        final ProcessBuilder processB = new ProcessBuilder()
                 .directory(new File(testerPath))
                 .command(
                         "groovy", "diff.groovy",
@@ -54,8 +54,9 @@ public final class ReportGenerator {
                         "-c", configFile.getAbsolutePath(),
                         "-l", "projects-to-test-on.properties"
                 )
-                .inheritIO()
-                .start();
+                .inheritIO();
+        processB.environment().put("MAVEN_OPTS", "-Xmx2048m");
+        final Process process = processB.start();
         final int code = process.waitFor();
         if (code != 0) {
             throw new IllegalStateException("an error occurred when running diff.groovy");

@@ -74,13 +74,13 @@ matrix:
     - jdk: oraclejdk8
       env:
         - DESC="checkstyle regression no exception on latest commit"
-        - CMD="./.ci/travis/checkstyle_regression_no_exception.sh HEAD HEAD^"
+        - CMD="export MAVEN_OPTS='-Xmx2000m' && export JAVA_OPTS='-Xmx2000m' && ./.ci/travis/checkstyle_regression_no_exception.sh HEAD HEAD^"
 
     # checkstyle regression no exception, changes to check (oraclejdk8)
     - jdk: oraclejdk8
       env:
         - DESC="checkstyle regression no exception, changes to check"
-        - CMD="./.ci/travis/checkstyle_regression_no_exception.sh f0ed29b d2e0c4c 8.5-SNAPSHOT"
+        - CMD="export MAVEN_OPTS='-Xmx2000m' && export JAVA_OPTS='-Xmx2000m' && ./.ci/travis/checkstyle_regression_no_exception.sh f0ed29b d2e0c4c 8.5-SNAPSHOT"
 
 script: eval $CMD
 
