@@ -10,12 +10,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>8.4</checkstyle.version>
-        <maven.plugin.checkstyle.version>2.17</maven.plugin.checkstyle.version>
+        <checkstyle.version>8.10</checkstyle.version>
+        <maven.plugin.checkstyle.version>3.0.0</maven.plugin.checkstyle.version>
         <maven.pmd.plugin.version>3.7</maven.pmd.plugin.version>
         <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
         <maven.pmd.plugin.version>3.8</maven.pmd.plugin.version>
-        <maven.sevntu.checkstyle.plugin.version>1.24.2</maven.sevntu.checkstyle.plugin.version>
+        <maven.sevntu.checkstyle.plugin.version>1.29.0</maven.sevntu.checkstyle.plugin.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
@@ -150,7 +150,9 @@
                                 https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-${checkstyle.version}/config/checkstyle_checks.xml
                             </configLocation>
                             <propertiesLocation>config/checkstyle.properties</propertiesLocation>
-                            <sourceDirectory>${project.basedir}/src</sourceDirectory>
+                            <sourceDirectories>
+                              <sourceDirectory>${project.basedir}/src</sourceDirectory>
+                            </sourceDirectories>
                             <failOnViolation>true</failOnViolation>
                             <logViolationsToConsole>true</logViolationsToConsole>
                             <maxAllowedViolations>0</maxAllowedViolations>
@@ -189,7 +191,9 @@
                                 https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-${checkstyle.version}/config/checkstyle_non_main_files_checks.xml
                             </configLocation>
                             <propertyExpansion>project.basedir=${project.basedir}</propertyExpansion>
-                            <sourceDirectory>${project.basedir}</sourceDirectory>
+                            <sourceDirectories>
+                              <sourceDirectory>${project.basedir}</sourceDirectory>
+                            </sourceDirectories>
                             <failOnViolation>true</failOnViolation>
                             <logViolationsToConsole>true</logViolationsToConsole>
                             <maxAllowedViolations>0</maxAllowedViolations>
@@ -267,7 +271,9 @@
                             </configLocation>
                             <propertyExpansion>project.basedir=${project.basedir}
                             </propertyExpansion>
-                            <sourceDirectory>${project.basedir}/src</sourceDirectory>
+                            <sourceDirectories>
+                              <sourceDirectory>${project.basedir}/src</sourceDirectory>
+                            </sourceDirectories>
                             <failOnViolation>true</failOnViolation>
                             <logViolationsToConsole>true</logViolationsToConsole>
                             <maxAllowedViolations>0</maxAllowedViolations>
