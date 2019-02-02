@@ -48,6 +48,7 @@ public final class ExtractInfoProcessor {
 
     /** The type of {@code List<ModuleExtractInfo>}. */
     private static final Type TYPE_EXTRACT_INFO_LIST = new TypeToken<List<ModuleExtractInfo>>() {
+        // constructor is not visible
     }.getType();
 
     /** Prevents instantiation. */

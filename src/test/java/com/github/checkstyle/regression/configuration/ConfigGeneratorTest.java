@@ -52,7 +52,7 @@ public class ConfigGeneratorTest {
     private final Collection<File> outputConfigs = new LinkedList<>();
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         for (File outputConfig : outputConfigs) {
             try {
                 FileUtils.forceDelete(outputConfig);

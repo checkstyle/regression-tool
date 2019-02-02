@@ -514,5 +514,31 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>eclipse-compiler</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.jdt</groupId>
+                    <artifactId>org.eclipse.jdt.annotation</artifactId>
+                    <version>2.1.0</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <executable>.ci/eclipse-compiler-javac.sh</executable>
+                            <classpathScope>test</classpathScope>
+                            <arguments>
+                                <classpath />
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
