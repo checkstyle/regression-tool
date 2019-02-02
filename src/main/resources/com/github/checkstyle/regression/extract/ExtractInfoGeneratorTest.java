@@ -32,7 +32,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
-import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
+import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
 
 /**
  * This file would be injected into checkstyle project and invoked by maven command
@@ -68,11 +68,11 @@ public class ExtractInfoGeneratorTest {
 
         final String name = clazz.getSimpleName();
         final String parent;
-        if (ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(clazz)
-                || ModuleReflectionUtils.isTreeWalkerFilterModule(clazz)) {
+        if (ModuleReflectionUtil.isCheckstyleTreeWalkerCheck(clazz)
+                || ModuleReflectionUtil.isTreeWalkerFilterModule(clazz)) {
             parent = "TreeWalker";
         }
-        else if (ModuleReflectionUtils.isRootModule(clazz)) {
+        else if (ModuleReflectionUtil.isRootModule(clazz)) {
             parent = "";
         }
         else {
