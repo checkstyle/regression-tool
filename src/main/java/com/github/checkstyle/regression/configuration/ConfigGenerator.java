@@ -54,11 +54,11 @@ import com.github.checkstyle.regression.data.ModuleInfo;
 public final class ConfigGenerator {
     /** The "doctype-public" value of the config. */
     public static final String DOCTYPE_PUBLIC =
-            "-//Puppy Crawl//DTD Check Configuration 1.3//EN";
+            "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN";
 
     /** The "doctype-system" value of the config. */
     private static final String DOCTYPE_SYSTEM =
-            "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd";
+            "https://checkstyle.org/dtds/configuration_1_3.dtd";
 
     /** The parent name "Checker". */
     private static final String PARENT_CHECKER = "Checker";
