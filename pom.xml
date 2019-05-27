@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>8.17</checkstyle.version>
+        <checkstyle.version>8.20</checkstyle.version>
         <maven.plugin.checkstyle.version>3.0.0</maven.plugin.checkstyle.version>
         <maven.pmd.plugin.version>3.7</maven.pmd.plugin.version>
         <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
