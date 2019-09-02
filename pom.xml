@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>8.20</checkstyle.version>
+        <checkstyle.version>8.24</checkstyle.version>
         <maven.plugin.checkstyle.version>3.0.0</maven.plugin.checkstyle.version>
         <maven.pmd.plugin.version>3.7</maven.pmd.plugin.version>
         <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
@@ -416,8 +416,7 @@
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>all</shadedClassifierName>
                                     <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                             <mainClass>com.github.checkstyle.regression.Main</mainClass>
                                         </transformer>
                                     </transformers>
