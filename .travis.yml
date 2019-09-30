@@ -9,11 +9,6 @@ before_install:
 install:
   -
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-
 cache:
   directories:
     - ~/.m2
@@ -25,33 +20,33 @@ branches:
 matrix:
   fast_finish: true
   include:
-    # unit tests (oraclejdk8)
-    - jdk: oraclejdk8
+    # unit tests (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="tests and deploy"
         - CMD="mvn clean integration-test failsafe:verify"
         - DEPLOY="true"
 
-    # checkstyle (oraclejdk8)
-    - jdk: oraclejdk8
+    # checkstyle (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="checkstyle and sevntu-checkstyle"
         - CMD="mvn clean verify -DskipTests -Dpmd.skip=true -Dfindbugs.skip=true -Dcobertura.skip=true"
 
-    # cobertura and codecov (oraclejdk8)
-    - jdk: oraclejdk8
+    # cobertura and codecov (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="cobertura and codecov"
         - CMD="mvn clean compile cobertura:check cobertura:cobertura"
 
-    # findbugs and pmd (oraclejdk8)
-    - jdk: oraclejdk8
+    # findbugs and pmd (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="findbugs and pmd"
         - CMD="mvn clean compile pmd:check findbugs:check"
 
-    # checkstyle injection compile no error (oraclejdk8)
-    - jdk: oraclejdk8
+    # checkstyle injection compile no error (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="checkstyle injection compile no error"
         - CMD1="git clone https://github.com/checkstyle/checkstyle &&"
@@ -64,20 +59,20 @@ matrix:
         - CMD8="mvn test -Dtest=ExtractInfoGeneratorTest#generateExtractInfoFile"
         - CMD="$CMD1$CMD2$CMD3$CMD4$CMD5$CMD6$CMD7$CMD8"
 
-    # package no error (oraclejdk8)
-    - jdk: oraclejdk8
+    # package no error (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="package no error"
         - CMD="mvn clean package -Passembly"
 
-    # checkstyle regression no exception on latest commit (oraclejdk8)
-    - jdk: oraclejdk8
+    # checkstyle regression no exception on latest commit (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="checkstyle regression no exception on latest commit"
         - CMD="./.ci/travis/checkstyle_regression_no_exception.sh HEAD HEAD^"
 
-    # checkstyle regression no exception, changes to check (oraclejdk8)
-    - jdk: oraclejdk8
+    # checkstyle regression no exception, changes to check (openjdk8)
+    - jdk: openjdk8
       env:
         - DESC="checkstyle regression no exception, changes to check"
         - CMD="./.ci/travis/checkstyle_regression_no_exception.sh eae1de6 5df457c 8.11-SNAPSHOT"
