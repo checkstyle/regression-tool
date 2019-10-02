@@ -71,11 +71,12 @@ matrix:
         - DESC="checkstyle regression no exception on latest commit"
         - CMD="./.ci/travis/checkstyle_regression_no_exception.sh HEAD HEAD^"
 
+    # disabled till https://github.com/checkstyle/regression-tool/issues/101
     # checkstyle regression no exception, changes to check (openjdk8)
-    - jdk: openjdk8
-      env:
-        - DESC="checkstyle regression no exception, changes to check"
-        - CMD="./.ci/travis/checkstyle_regression_no_exception.sh eae1de6 5df457c 8.11-SNAPSHOT"
+    #- jdk: openjdk8
+    #  env:
+    #    - DESC="checkstyle regression no exception, changes to check"
+    #    - CMD="./.ci/travis/checkstyle_regression_no_exception.sh eae1de6 5df457c 8.11-SNAPSHOT"
 
 script: eval $CMD
 
