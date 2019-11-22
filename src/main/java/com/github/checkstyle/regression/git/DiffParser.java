@@ -176,14 +176,18 @@ public final class DiffParser {
             DiffEntry diffEntry, DiffFormatter formatter) throws IOException {
         final List<Integer> addedLines = formatter.toFileHeader(diffEntry).toEditList().stream()
                 .filter(edit -> edit.getBeginB() < edit.getEndB())
-                .flatMapToInt(edit -> Arrays.stream(
-                        new IntRange(edit.getBeginB(), edit.getEndB() - 1).toArray()))
+                .flatMapToInt(edit -> {
+                    return Arrays.stream(
+                            new IntRange(edit.getBeginB(), edit.getEndB() - 1).toArray());
+                })
                 .boxed()
                 .collect(Collectors.toList());
         final List<Integer> deletedLines = formatter.toFileHeader(diffEntry).toEditList().stream()
                 .filter(edit -> edit.getBeginA() < edit.getEndA())
-                .flatMapToInt(edit -> Arrays.stream(
-                        new IntRange(edit.getBeginA(), edit.getEndA() - 1).toArray()))
+                .flatMapToInt(edit -> {
+                    return Arrays.stream(
+                            new IntRange(edit.getBeginA(), edit.getEndA() - 1).toArray());
+                })
                 .boxed()
                 .collect(Collectors.toList());
         return ImmutableGitChange.builder()
