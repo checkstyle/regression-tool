@@ -1,13 +1,7 @@
-language: java
-
-sudo: false
+version: ~> 1.0
 dist: xenial
-
-before_install:
-  - export M2_HOME=/usr/local/maven
-
-install:
-  -
+os: linux
+language: java
 
 cache:
   directories:
@@ -17,7 +11,10 @@ branches:
   only:
     - master
 
-matrix:
+install:
+  - ""
+
+jobs:
   fast_finish: true
   include:
     # unit tests (openjdk8)
@@ -78,7 +75,9 @@ matrix:
     #    - DESC="checkstyle regression no exception, changes to check"
     #    - CMD="./.ci/travis/checkstyle_regression_no_exception.sh eae1de6 5df457c 8.11-SNAPSHOT"
 
-script: eval $CMD
+script: |
+  echo $CMD
+  eval $CMD
 
 after_success:
   -
