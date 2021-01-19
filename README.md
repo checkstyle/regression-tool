@@ -1,5 +1,5 @@
 # Regression-tool
-
+This is a test.
 Regression-tool is an automation tool to do regression testing based on proposed patch(Pull Request) 
 of checkstyle project. The tool could generate configuration based on Git changes, which is used to 
 generate diff report between the base and the patch branch.
