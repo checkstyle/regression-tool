@@ -24,7 +24,8 @@ git checkout master
 git reset --hard "${MASTER_COMMIT}"
 cd ..
 mvn clean package -Passembly
-java -jar target/regression-tool-1.0-SNAPSHOT-all.jar -r "$CHECKSTYLE_PATH" -p test-branch -t contribution/checkstyle-tester
+cp target/regression-tool-1.0-SNAPSHOT-all.jar .
+java -jar regression-tool-1.0-SNAPSHOT-all.jar -r "$CHECKSTYLE_PATH" -p test-branch -t contribution/checkstyle-tester
 RESULT="$?"
 cat config-test-branch-*.xml
 rm config-test-branch-*.xml
