@@ -141,6 +141,11 @@
                         <artifactId>checkstyle</artifactId>
                         <version>${checkstyle.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>com.github.sevntu-checkstyle</groupId>
+                        <artifactId>sevntu-checks</artifactId>
+                        <version>${maven.sevntu.checkstyle.plugin.version}</version>
+                    </dependency>
                 </dependencies>
                 <executions>
                     <execution>
@@ -169,21 +174,6 @@
                             </outputFile>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven.plugin.checkstyle.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
                     <execution>
                         <id>check_non_main</id>
                         <goals>
@@ -243,26 +233,6 @@
                             </excludes>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven.plugin.checkstyle.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.github.sevntu-checkstyle</groupId>
-                        <artifactId>sevntu-checks</artifactId>
-                        <version>${maven.sevntu.checkstyle.plugin.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
                     <execution>
                         <id>check_sevntu</id>
                         <goals>
@@ -469,7 +439,8 @@
                                         <lineRate>77</lineRate>
                                     </regex>
                                     <regex>
-                                        <pattern>com.github.checkstyle.regression.configuration.ConfigGenerator</pattern>
+                                        <pattern>com.github.checkstyle.regression.configuration.ConfigGenerator
+                                        </pattern>
                                         <branchRate>80</branchRate>
                                         <lineRate>92</lineRate>
                                     </regex>
