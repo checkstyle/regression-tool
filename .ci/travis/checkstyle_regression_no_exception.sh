@@ -8,7 +8,11 @@ if [ ! -d checkstyle ]; then
 fi
 
 if [ ! -d contribution ]; then
-    git clone --depth=1 https://github.com/checkstyle/contribution
+    git clone https://github.com/nmancus1/contribution
+    cd contribution
+    git checkout issue-539
+
+    cd ..
 fi
 if [ ! -z "$CHECKSTYLE_VERSION" ]; then
     sed -i'' "s/<checkstyle\.version>.*<\/checkstyle\.version>/<checkstyle\.version>${CHECKSTYLE_VERSION}<\/checkstyle\.version>/g" \
