@@ -34,6 +34,10 @@
         <allow pkg="org.xml"/>
     </subpackage>
 
+    <subpackage name="customcheck">
+        <allow pkg="com.puppycrawl.tools.checkstyle"/>
+    </subpackage>
+
     <subpackage name="data">
         <!-- it is only allowed until https://github.com/checkstyle/checkstyle/issues/3492 -->
         <allow pkg="org.immutables.gson"/>

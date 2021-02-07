@@ -460,6 +460,11 @@
                                         <lineRate>0</lineRate>
                                     </regex>
                                     <regex>
+                                        <pattern>com.github.checkstyle.regression.customcheck.UnitTestProcessorCheck</pattern>
+                                        <branchRate>61</branchRate>
+                                        <lineRate>79</lineRate>
+                                    </regex>
+                                    <regex>
                                         <pattern>com.github.checkstyle.regression.report.ReportGenerator</pattern>
                                         <branchRate>0</branchRate>
                                         <lineRate>0</lineRate>
